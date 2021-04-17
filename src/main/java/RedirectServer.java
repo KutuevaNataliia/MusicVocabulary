@@ -6,10 +6,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.security.KeyStore;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class RedirectServer {
 
-    static void startRedirectServer() throws Exception {
+    static void startRedirectServer() {
         try {
             // setup the socket address
             InetSocketAddress address = new InetSocketAddress(8080);
@@ -54,7 +57,7 @@ public class RedirectServer {
                 }
             });
             httpsServer.createContext("/", new MyHandler());
-            httpsServer.setExecutor(null); // creates a default executor
+            httpsServer.setExecutor(Executors.newSingleThreadExecutor()); // creates a default executor
             httpsServer.start();
 
         } catch (Exception exception) {
@@ -69,8 +72,18 @@ public class RedirectServer {
         public void handle(HttpExchange t) throws IOException {
             String response = "This is the response";
 
-            System.out.println(t.getRequestURI().getQuery());
-            Authorization.setCode(t.getRequestURI().getQuery());
+            String query = t.getRequestURI().getQuery();
+
+//            String fullHeader = t.getRequestURI().toString();
+//            System.out.println("Адресная строка " + fullHeader);
+            if (query != null) {
+                System.out.println(query);
+                String newQuery = query.replace("code=", "");
+                Authorization.setCode(newQuery);
+                Authorization.authorizationCode_Sync();
+                GetUsersSavedTracks.setGetUsersSavedTracksRequest(Authorization.spotifyApi);
+                GetUsersSavedTracks.getUsersSavedTracks_Sync();
+            }
             t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
             t.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = t.getResponseBody();
@@ -78,5 +91,10 @@ public class RedirectServer {
             os.close();
 
         }
+    }
+
+    public static void main(String[] args) {
+        Authorization.authorizationCodeUri_Async();
+        startRedirectServer();
     }
 }

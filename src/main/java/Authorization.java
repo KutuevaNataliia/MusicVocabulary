@@ -1,5 +1,3 @@
-//package authorization.authorization_code;
-
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.SpotifyHttpManager;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
@@ -13,19 +11,22 @@ import java.net.URI;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.Future;
 
 public class Authorization {
     private static final String clientId = "4c8bbd870d194e10af716b60a15e7cbe";
     private static final String clientSecret = "f66a67dab5834c8e8831511a5280351b";
     private static final URI redirectUri = SpotifyHttpManager.makeUri("https://localhost:8080");
-    private static String code;
+
+    private static AuthorizationCodeRequest authorizationCodeRequest;
 
     public static void setCode(String retrievedCode)
     {
-        code = retrievedCode;
+        authorizationCodeRequest = spotifyApi.authorizationCode(retrievedCode)
+                .build();
     }
 
-    private static final SpotifyApi spotifyApi = new SpotifyApi.Builder()
+    public static final SpotifyApi spotifyApi = new SpotifyApi.Builder()
             .setClientId(clientId)
             .setClientSecret(clientSecret)
             .setRedirectUri(redirectUri)
@@ -42,10 +43,12 @@ public class Authorization {
         System.out.println("URI: " + uri.toString());
     }
 
-    private static final AuthorizationCodeRequest authorizationCodeRequest = spotifyApi.authorizationCode(code)
-            .build();
+//    private static final AuthorizationCodeRequest authorizationCodeRequest = spotifyApi.authorizationCode(code)
+//            .build();
 
     public static void authorizationCode_Sync() {
+
+        System.out.println("Объект api создан");
         try {
             final AuthorizationCodeCredentials authorizationCodeCredentials = authorizationCodeRequest.execute();
 
@@ -56,6 +59,27 @@ public class Authorization {
             System.out.println("Expires in: " + authorizationCodeCredentials.getExpiresIn());
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public static void authorizationCode_Async() {
+        try {
+            final CompletableFuture<AuthorizationCodeCredentials> authorizationCodeCredentialsFuture = authorizationCodeRequest.executeAsync();
+
+            // Thread free to do other tasks...
+
+            // Example Only. Never block in production code.
+            final AuthorizationCodeCredentials authorizationCodeCredentials = authorizationCodeCredentialsFuture.join();
+
+            // Set access and refresh token for further "spotifyApi" object usage
+            spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
+            spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
+
+            System.out.println("Expires in: " + authorizationCodeCredentials.getExpiresIn());
+        } catch (CompletionException e) {
+            System.out.println("Error: " + e.getCause().getMessage());
+        } catch (CancellationException e) {
+            System.out.println("Async operation cancelled.");
         }
     }
 
@@ -76,14 +100,14 @@ public class Authorization {
         }
     }
 
-    public static void main(String[] args) {
-        authorizationCodeUri_Sync();
-        //authorizationCodeUri_Async();
+    /*public static void main(String[] args) {
+        //authorizationCodeUri_Sync();
+        authorizationCodeUri_Async();
         try {
             RedirectServer.startRedirectServer();
-            authorizationCode_Sync();
+            authorizationCode_Async();
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }
