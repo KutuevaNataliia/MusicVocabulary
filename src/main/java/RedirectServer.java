@@ -1,11 +1,15 @@
 import com.sun.net.httpserver.*;
+import core.GLA;
+import genius.SongSearch;
 
 import javax.net.ssl.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.net.URI;
 import java.security.KeyStore;
+import java.util.LinkedList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -57,7 +61,7 @@ public class RedirectServer {
                 }
             });
             httpsServer.createContext("/", new MyHandler());
-            httpsServer.setExecutor(Executors.newSingleThreadExecutor()); // creates a default executor
+            httpsServer.setExecutor(null); // creates a default executor
             httpsServer.start();
 
         } catch (Exception exception) {
@@ -78,11 +82,13 @@ public class RedirectServer {
 //            System.out.println("Адресная строка " + fullHeader);
             if (query != null) {
                 System.out.println(query);
-                String newQuery = query.replace("code=", "");
-                Authorization.setCode(newQuery);
-                Authorization.authorizationCode_Sync();
-                GetUsersSavedTracks.setGetUsersSavedTracksRequest(Authorization.spotifyApi);
-                GetUsersSavedTracks.getUsersSavedTracks_Sync();
+                if (query.startsWith("code=")) {
+                    String newQuery = query.replace("code=", "");
+                    Authorization.setCode(newQuery);
+                    Authorization.authorizationCode_Sync();
+                    GetUsersSavedTracks.setGetUsersSavedTracksRequest(Authorization.spotifyApi);
+                    GetUsersSavedTracks.getUsersSavedTracks_Sync();
+                }
             }
             t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
             t.sendResponseHeaders(200, response.getBytes().length);
@@ -93,8 +99,40 @@ public class RedirectServer {
         }
     }
 
+    /*static class RequestFilter extends Filter {
+        private static final String FILTER_DESC = "RequestFilter creates a string from the request parameters" +
+                " and pass it to MyHandler";
+
+        public void doFilter(HttpExchange exchange, Filter.Chain chain) throws IOException{
+            URI uri = exchange.getRequestURI();
+        }
+
+        private String createStringFromQueryParameters(URI uri) {
+            String query = uri.getQuery();
+            if (query != null) {
+
+            }
+        }
+
+        public String description() {
+            return FILTER_DESC;
+        }
+    }
+*/
     public static void main(String[] args) {
         Authorization.authorizationCodeUri_Async();
         startRedirectServer();
+        GLA gla = new GLA();
+        try {
+            SongSearch songSearch = gla.search("arctic monkeys old yellow bricks");
+            LinkedList<SongSearch.Hit> hits = songSearch.getHits();
+            for (SongSearch.Hit hit: hits) {
+                if (hit.getArtist().getName().equalsIgnoreCase("Arctic Monkeys") && hit.getTitle().equalsIgnoreCase("old yellow bricks")) {
+                    System.out.println(hit.fetchLyrics());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

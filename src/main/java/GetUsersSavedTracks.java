@@ -18,7 +18,7 @@ public class GetUsersSavedTracks {
     public static void setGetUsersSavedTracksRequest (SpotifyApi spotifyApi) {
        getUsersSavedTracksRequest = spotifyApi.getUsersSavedTracks()
           .limit(50)
-//          .offset(0)
+          .offset(0)
 //          .market(CountryCode.SE)
           .build();
     }
@@ -32,11 +32,12 @@ public class GetUsersSavedTracks {
             SavedTrack[] tracks = savedTrackPaging.getItems();
             try (FileWriter writer = new FileWriter("FavouriteTracks.txt")) {
                 for (SavedTrack track: tracks) {
+                    writer.write("Artists: ");
                     ArtistSimplified[] artists = track.getTrack().getArtists();
                     for (ArtistSimplified artist: artists) {
                         writer.write(artist.getName() + " ");
                     }
-                    writer.write(" " + track.getTrack().getName() + "\n");
+                    writer.write("Track: " + track.getTrack().getName() + "\n");
                 }
             }
         } catch (IOException | SpotifyWebApiException | ParseException e) {

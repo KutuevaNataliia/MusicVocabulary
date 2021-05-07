@@ -8,6 +8,7 @@ version '1.0-SNAPSHOT'
 repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
+    flatDir { dirs 'GLA/target'}
 }
 
 dependencies {
@@ -15,6 +16,8 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     implementation 'se.michaelthelin.spotify:spotify-web-api-java:6.5.2'
     implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: '+'
+    implementation 'com.lowlevelsubmarine:GeniusLyricsAPI:1.0.0'
+    implementation group: 'org.json', name: 'json', version: '20210307'
 }
 
 test {

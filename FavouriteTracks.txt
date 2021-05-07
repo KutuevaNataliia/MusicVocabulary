@@ -1,50 +1,50 @@
-The Raconteurs  Steady, As She Goes
-Red Hot Chili Peppers  Goodbye Angels
-The Strokes  Someday
-Tom Grennan  Something Better
-Arctic Monkeys  Leave Before The Lights Come On
-Шоколадный Торт  Питерский рассвет
-The Smiths  Last Night I Dreamt That Somebody Loved Me - 2011 Remaster
-Kaiser Chiefs  Wait
-Muse  Pressure
-Barry Manilow  Copacabana (At the Copa) - Long Version
-Panic! At The Disco  One of the Drunks
-The Strokes  Reptilia
-Arctic Monkeys  Baby I'm Yours
-The Reytons  Broke Boys Cartel
-Dr. Lonnie Smith Iggy Pop  Sunshine Superman
-The Sails  Bang!
-Dinosaur Jr.  I Ran Away
-Tame Impala  The Less I Know The Better
-The Strokes  Ode To The Mets
-The Jaded Hearts Club Nic Cester  This Love Starved Heart of Mine (It's Killing Me)
-Girls Aloud  The Promise
-The Real Thing  You To Me Are Everything
-The Struts Robbie Williams  Strange Days (with Robbie Williams)
-Kaiser Chiefs  Ruby
-Scorpions  Catch Your Train
-Scorpions  Pictured Life
-Scorpions  Restless Nights
-The Last Shadow Puppets Alex Turner Miles Kane  Standing Next To Me
-The Struts  Could Have Been Me
-The Last Shadow Puppets Alex Turner Miles Kane  Miracle Aligner
-The Strokes  Bad Decisions
-Kaiser Chiefs  The Angry Mob
-Cage The Elephant  Cigarette Daydreams
-Cage The Elephant  Too Late To Say Goodbye
-Waterparks  Stupid for You
-blink-182  All The Small Things
-Lumen  Sid & Nancy
-Avril Lavigne  Complicated
-YUNGBLUD  cotton candy
-Jonas Brothers  When You Look Me In The Eyes
-Miley Cyrus  Wrecking Ball
-Ella Henderson  Yours
-Avril Lavigne  Here's to Never Growing Up
-Lana Del Rey  Summertime Sadness
-Miley Cyrus  Plastic Hearts
-Miley Cyrus  Midnight Sky
-Avril Lavigne  When You're Gone
-Mini Mansions  Forgot Your Name
-Franz Ferdinand  Take Me Out
-Shawn Mendes Camila Cabello  Se?orita
+Artists: The Raconteurs Track: Steady, As She Goes
+Artists: Red Hot Chili Peppers Track: Goodbye Angels
+Artists: The Strokes Track: Someday
+Artists: Tom Grennan Track: Something Better
+Artists: Arctic Monkeys Track: Leave Before The Lights Come On
+Artists: Шоколадный Торт Track: Питерский рассвет
+Artists: The Smiths Track: Last Night I Dreamt That Somebody Loved Me - 2011 Remaster
+Artists: Kaiser Chiefs Track: Wait
+Artists: Muse Track: Pressure
+Artists: Barry Manilow Track: Copacabana (At the Copa) - Long Version
+Artists: Panic! At The Disco Track: One of the Drunks
+Artists: The Strokes Track: Reptilia
+Artists: Arctic Monkeys Track: Baby I'm Yours
+Artists: The Reytons Track: Broke Boys Cartel
+Artists: Dr. Lonnie Smith Iggy Pop Track: Sunshine Superman
+Artists: The Sails Track: Bang!
+Artists: Dinosaur Jr. Track: I Ran Away
+Artists: Tame Impala Track: The Less I Know The Better
+Artists: The Strokes Track: Ode To The Mets
+Artists: The Jaded Hearts Club Nic Cester Track: This Love Starved Heart of Mine (It's Killing Me)
+Artists: Girls Aloud Track: The Promise
+Artists: The Real Thing Track: You To Me Are Everything
+Artists: The Struts Robbie Williams Track: Strange Days (with Robbie Williams)
+Artists: Kaiser Chiefs Track: Ruby
+Artists: Scorpions Track: Catch Your Train
+Artists: Scorpions Track: Pictured Life
+Artists: Scorpions Track: Restless Nights
+Artists: The Last Shadow Puppets Alex Turner Miles Kane Track: Standing Next To Me
+Artists: The Struts Track: Could Have Been Me
+Artists: The Last Shadow Puppets Alex Turner Miles Kane Track: Miracle Aligner
+Artists: The Strokes Track: Bad Decisions
+Artists: Kaiser Chiefs Track: The Angry Mob
+Artists: Cage The Elephant Track: Cigarette Daydreams
+Artists: Cage The Elephant Track: Too Late To Say Goodbye
+Artists: Waterparks Track: Stupid for You
+Artists: blink-182 Track: All The Small Things
+Artists: Lumen Track: Sid & Nancy
+Artists: Avril Lavigne Track: Complicated
+Artists: YUNGBLUD Track: cotton candy
+Artists: Jonas Brothers Track: When You Look Me In The Eyes
+Artists: Miley Cyrus Track: Wrecking Ball
+Artists: Ella Henderson Track: Yours
+Artists: Avril Lavigne Track: Here's to Never Growing Up
+Artists: Lana Del Rey Track: Summertime Sadness
+Artists: Miley Cyrus Track: Plastic Hearts
+Artists: Miley Cyrus Track: Midnight Sky
+Artists: Avril Lavigne Track: When You're Gone
+Artists: Mini Mansions Track: Forgot Your Name
+Artists: Franz Ferdinand Track: Take Me Out
+Artists: Shawn Mendes Camila Cabello Track: Se?orita
