@@ -1,3 +1,5 @@
+Total: 57
+Artists: FEET Track: English Weather
 Artists: The Raconteurs Track: Steady, As She Goes
 Artists: Red Hot Chili Peppers Track: Goodbye Angels
 Artists: The Strokes Track: Someday
@@ -48,3 +50,9 @@ Artists: Avril Lavigne Track: When You're Gone
 Artists: Mini Mansions Track: Forgot Your Name
 Artists: Franz Ferdinand Track: Take Me Out
 Artists: Shawn Mendes Camila Cabello Track: Se?orita
+Artists: Alex Turner Track: It's hard to get around the wind
+Artists: The Zutons Track: Zuton Fever
+Artists: The Smashing Pumpkins Track: The Colour Of Love
+Artists: Шоколадный Торт Track: Завтра=никогда
+Artists: Шоколадный Торт Toli Wild Track: Россия не для грустных
+Artists: Radiohead Track: Man of War

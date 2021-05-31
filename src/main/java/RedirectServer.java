@@ -1,6 +1,9 @@
 import com.sun.net.httpserver.*;
+import com.wrapper.spotify.SpotifyApi;
+import com.wrapper.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
 import core.GLA;
 import genius.SongSearch;
+import org.apache.log4j.Logger;
 
 import javax.net.ssl.*;
 import java.io.FileInputStream;
@@ -10,11 +13,11 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.security.KeyStore;
 import java.util.LinkedList;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class RedirectServer {
+
+    final static Logger logger = Logger.getLogger(RedirectServer.class);
 
     static void startRedirectServer() {
         try {
@@ -26,9 +29,9 @@ public class RedirectServer {
             SSLContext sslContext = SSLContext.getInstance("TLS");
 
             // initialise the keystore
-            char[] password = "password".toCharArray();
+            char[] password = "passw0rd".toCharArray();
             KeyStore ks = KeyStore.getInstance("JKS");
-            FileInputStream fis = new FileInputStream("testkey.jks");
+            FileInputStream fis = new FileInputStream("keystore.jks");
             ks.load(fis, password);
 
             // setup the key manager factory
@@ -71,6 +74,23 @@ public class RedirectServer {
         }
     }
 
+    private static void handleRequest(String query) {
+        CompletableFuture<String> futureCode = CompletableFuture.supplyAsync(() -> query);
+        CompletableFuture<AuthorizationCodeRequest> futureCodeRequest = futureCode.thenApply(Authorization::getAuthorizationCodeRequest);
+        futureCodeRequest.thenAccept(Authorization::authorizationCode_Async);
+        /*futureApi.thenAccept(GetUsersSavedTracks::setSpotifyApi);
+        try {
+            GetUsersSavedTracks.setSpotifyApi(futureApi.get());
+            logger.info("future get works");
+            GetUsersSavedTracks.setGetUsersSavedTracksRequest(0);
+            GetUsersSavedTracks.getUsersSavedTracks_Sync();
+        }
+        catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            logger.error("future get fails", e);
+        }*/
+    }
+
     static class MyHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange t) throws IOException {
@@ -81,13 +101,13 @@ public class RedirectServer {
 //            String fullHeader = t.getRequestURI().toString();
 //            System.out.println("Адресная строка " + fullHeader);
             if (query != null) {
-                System.out.println(query);
+                logger.info("query = " + query);
+                //System.out.println(query);
                 if (query.startsWith("code=")) {
                     String newQuery = query.replace("code=", "");
-                    Authorization.setCode(newQuery);
-                    Authorization.authorizationCode_Sync();
-                    GetUsersSavedTracks.setGetUsersSavedTracksRequest(Authorization.spotifyApi);
-                    GetUsersSavedTracks.getUsersSavedTracks_Sync();
+                    handleRequest(newQuery);
+                    /*Authorization.setCode(newQuery);
+                    Authorization.authorizationCode_Sync();*/
                 }
             }
             t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
@@ -117,22 +137,11 @@ public class RedirectServer {
         public String description() {
             return FILTER_DESC;
         }
-    }
-*/
-    public static void main(String[] args) {
+    }*/
+
+    /*public static void main(String[] args) {
+
         Authorization.authorizationCodeUri_Async();
         startRedirectServer();
-        GLA gla = new GLA();
-        try {
-            SongSearch songSearch = gla.search("arctic monkeys old yellow bricks");
-            LinkedList<SongSearch.Hit> hits = songSearch.getHits();
-            for (SongSearch.Hit hit: hits) {
-                if (hit.getArtist().getName().equalsIgnoreCase("Arctic Monkeys") && hit.getTitle().equalsIgnoreCase("old yellow bricks")) {
-                    System.out.println(hit.fetchLyrics());
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    }*/
 }

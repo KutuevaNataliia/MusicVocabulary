@@ -1,7 +1,18 @@
+WordFrequencyPair.java
+ WordFrequencyPair
+TokenExpiresPair.java
+ TokenExpiresPair
+VocabularyManipulation.java
+ VocabularyManipulation
+DbConnection.java
+ DbConnection
 Authorization.java
  Authorization
 GetUsersSavedTracks.java
  GetUsersSavedTracks
+Start.java
+ Start
+ Start$UpdateActionListener
 RedirectServer.java
  RedirectServer
  RedirectServer$1
