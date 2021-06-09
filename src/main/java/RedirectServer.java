@@ -76,19 +76,11 @@ public class RedirectServer {
 
     private static void handleRequest(String query) {
         CompletableFuture<String> futureCode = CompletableFuture.supplyAsync(() -> query);
+        logger.info("future code done");
         CompletableFuture<AuthorizationCodeRequest> futureCodeRequest = futureCode.thenApply(Authorization::getAuthorizationCodeRequest);
+        logger.info("future CodeRequest done");
         futureCodeRequest.thenAccept(Authorization::authorizationCode_Async);
-        /*futureApi.thenAccept(GetUsersSavedTracks::setSpotifyApi);
-        try {
-            GetUsersSavedTracks.setSpotifyApi(futureApi.get());
-            logger.info("future get works");
-            GetUsersSavedTracks.setGetUsersSavedTracksRequest(0);
-            GetUsersSavedTracks.getUsersSavedTracks_Sync();
-        }
-        catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            logger.error("future get fails", e);
-        }*/
+        logger.info("everything ok");
     }
 
     static class MyHandler implements HttpHandler {

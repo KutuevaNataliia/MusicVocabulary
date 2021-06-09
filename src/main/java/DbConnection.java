@@ -1,6 +1,8 @@
+import javax.swing.*;
 import java.io.Closeable;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class DbConnection implements Closeable{
     private Connection connection;
@@ -52,22 +54,127 @@ public class DbConnection implements Closeable{
         }
         return false;
     }
-
-    public String getSongText(String spotifyID) {
-        String query = "SELECT text FROM my_songs WHERE my_songs.spotify_song_id = ?;";
-        String result = "";
+    public  ArrayList<SongInformation> getSongsWithWord(String word) {
+        ArrayList<SongInformation> songInformations = new ArrayList<>();
+        String query1 = "SELECT * FROM my_songs WHERE spotify_song_id IN "
+        + "(SELECT spotify_song_id FROM words_in_songs WHERE word = ?);";
+        String query2 = "SELECT name FROM artists WHERE spotify_song_id = ?;";
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(query1);
+            preparedStatement.setString(1, word);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                SongInformation songInf = new SongInformation();
+                songInf.spotifyId = resultSet.getString("spotify_song_id");
+                songInf.name = resultSet.getString("name");
+                songInf.text = resultSet.getString("text");
+                PreparedStatement preparedStatement2 = connection.prepareStatement(query2);
+                preparedStatement2.setString(1, songInf.spotifyId);
+                ResultSet resultSet2 = preparedStatement2.executeQuery();
+                int counter2 = 0;
+                while (resultSet2.next()) {
+                    songInf.artists[counter2] = resultSet2.getString("name");
+                    counter2++;
+                }
+                songInf.artistsNumber = counter2;
+                songInformations.add(songInf);
+            }
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return songInformations;
+    }
+
+    public Vector<String> getAllSongIDs() {
+        String query = "SELECT spotify_song_id FROM my_songs;";
+        Vector<String> songIDs = new Vector<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while(resultSet.next()) {
+                songIDs.add(resultSet.getString("spotify_song_id"));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return  songIDs;
+    }
+
+
+    public SongInformation getSongInformationByID(String spotifyID) {
+        String query1 = "SELECT * FROM my_songs WHERE spotify_song_id = ?;";
+        String query2 = "SELECT name FROM artists WHERE spotify_song_id = ?;";
+        SongInformation songInf = new SongInformation();
+        songInf.spotifyId = spotifyID;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query1);
             preparedStatement.setString(1, spotifyID);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                result = resultSet.getString(1);
+                songInf.name = resultSet.getString("name");
+                songInf.text = resultSet.getString("text");
+                PreparedStatement preparedStatement2 = connection.prepareStatement(query2);
+                preparedStatement2.setString(1, spotifyID);
+                ResultSet resultSet2 = preparedStatement2.executeQuery();
+                int counter = 0;
+                while (resultSet2.next()) {
+                    songInf.artists[counter] = resultSet2.getString("name");
+                    counter++;
+                }
+                songInf.artistsNumber = counter;
             }
         }
         catch  (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return result;
+        return songInf;
+    }
+
+    public Vector<WordInformation> getAllWordInformation() {
+        String query = "SELECT * FROM words_information;";
+        Vector<WordInformation> wordInfs = new Vector<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while(resultSet.next()) {
+                WordInformation wordInf = new WordInformation();
+                wordInf.mainForm = resultSet.getString("main");
+                wordInf.translation = resultSet.getString("translation");
+                int counter = 0;
+                for (int i = 0; i < 5; i++) {
+                    String additionalForm = resultSet.getString(i + 4);
+                    if (additionalForm != null) {
+                        wordInf.additionalForms[i] = additionalForm;
+                        counter++;
+                    }
+                }
+                wordInf.additionalFormsNumber = counter;
+                wordInfs.add(wordInf);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return wordInfs;
+    }
+
+    public String[] getWordsInSong(String songID) {
+        String query = "SELECT word FROM words_in_songs WHERE spotify_song_id = ?;";
+        ArrayList<String> rareWords = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, songID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                rareWords.add(resultSet.getString("word"));
+            }
+        }
+        catch  (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        String[] words = new String[rareWords.size()];
+        words = rareWords.toArray(words);
+        return words;
     }
 
     public int getWordFrequency(String word) {
@@ -113,20 +220,113 @@ public class DbConnection implements Closeable{
         }
     }
 
-    public String[] getAllRareWords() {
-        ArrayList<String> rareWords = new ArrayList<>();
+    public MyPair<WordInformation, Integer> getWordInformation(String word) {
+        WordInformation wordInf = null;
+        int key = 0;
+        String query = "SELECT * FROM words_information WHERE main = ? OR additional1 = ? " +
+                "OR additional2 = ? OR additional3 = ? OR additional4 = ? OR additional5 = ?;";
         try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            for (int i = 1; i <= 6; i++) {
+                preparedStatement.setString(i, word);
+            }
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                key = resultSet.getInt(1);
+                wordInf = new WordInformation();
+                wordInf.mainForm = resultSet.getString("main");
+                wordInf.translation = resultSet.getString("translation");
+                wordInf.additionalFormsNumber = 0;
+                for (int i = 0; i < 5; i++) {
+                    String additionalForm = resultSet.getString(i + 4);
+                    if (additionalForm != null) {
+                        wordInf.additionalForms[wordInf.additionalFormsNumber] = additionalForm;
+                        wordInf.additionalFormsNumber++;
+                    }
+                }
+            }
+        }
+        catch  (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return  new MyPair<>(wordInf, key);
+    }
+
+    public void addWordInformation(WordInformation wordInf) {
+        String query = "INSERT INTO words_information (main, translation, additional1, additional2, additional3, " +
+                "additional4, additional5) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, wordInf.mainForm);
+            preparedStatement.setString(2, wordInf.translation);
+            int counter = 0;
+            for ( ;counter < wordInf.additionalFormsNumber; counter++) {
+                preparedStatement.setString(counter + 3, wordInf.additionalForms[counter]);
+            }
+            for ( ;counter < 5; counter++) {
+                preparedStatement.setNull(counter + 3, Types.NULL);
+            }
+            int rows = preparedStatement.executeUpdate();
+        }
+        catch  (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void updateWordInformation(WordInformation wordInf, int key) {
+        if (wordInf == null) {
+            return;
+        }
+        String query = "UPDATE words_information SET main = ?, translation = ?, additional1 = ?, " +
+                "additional2 = ?, additional3 = ?, additional4 = ?, additional5 = ? WHERE id = ?;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, wordInf.mainForm);
+            preparedStatement.setString(2, wordInf.translation);
+            int counter = 0;
+            for ( ;counter < wordInf.additionalFormsNumber; counter++) {
+                preparedStatement.setString(counter + 3, wordInf.additionalForms[counter]);
+            }
+            for ( ;counter < 5; counter++) {
+                preparedStatement.setNull(counter + 3, Types.NULL);
+            }
+            preparedStatement.setInt(8, key);
+            int rows = preparedStatement.executeUpdate();
+        }
+        catch  (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public Vector<String> getAllRareWords() {
+        Vector<String> rareWords = new Vector<>();
+        String query = "SELECT word FROM my_vocabulary WHERE frequency < 4 ORDER BY word;";
+        try {
+            rareWords.clear();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT word FROM my_vocabulary WHERE frequency < 4 ORDER BY word;");
+            ResultSet resultSet = statement.executeQuery(query);
             while(resultSet.next()) {
                 rareWords.add(resultSet.getString("word"));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        String allRareWords[] = new String[rareWords.size()];
-        allRareWords = rareWords.toArray(allRareWords);
-        return allRareWords;
+        return rareWords;
+    }
+
+    public Vector<String> getFavourites() {
+        Vector<String> favourites = new Vector<>();
+        try {
+            favourites.clear();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT word FROM favourites ORDER BY word;");
+            while(resultSet.next()) {
+                favourites.add(resultSet.getString("word"));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return favourites;
     }
 
     public void addWordToFavourites(String word) {
@@ -151,6 +351,36 @@ public class DbConnection implements Closeable{
         catch  (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public int getSongsAmount() {
+        int result = 0;
+        String query = "SELECT COUNT(*) FROM my_songs;";
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            if(resultSet.next()) {
+                result = resultSet.getInt(1);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return result;
+    }
+
+    public int getAllWordsAmount() {
+        int result = 0;
+        String query = "SELECT COUNT(*) FROM my_vocabulary;";
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            if(resultSet.next()) {
+                result = resultSet.getInt(1);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return result;
     }
 
     public ArrayList<WordFrequencyPair> getAllVocabulary() {

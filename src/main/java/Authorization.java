@@ -13,7 +13,6 @@ import java.net.URI;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.Future;
 
 public class Authorization {
     final static Logger logger = Logger.getLogger(Authorization.class);
@@ -47,7 +46,7 @@ public class Authorization {
         System.out.println("URI: " + uri.toString());
     }
 
-    public static void authorizationCodeRefresh_Sync(String refreshToken) {
+    public static void authorizationCodeRefresh_Sync(String refreshToken, DbConnection dbConnection) {
         spotifyApi.setRefreshToken(refreshToken);
         AuthorizationCodeRefreshRequest authorizationCodeRefreshRequest = spotifyApi.authorizationCodeRefresh()
                 .build();
@@ -58,12 +57,12 @@ public class Authorization {
             String accessToken = authorizationCodeCredentials.getAccessToken();
             spotifyApi.setAccessToken(accessToken);
 
-            DbConnection dbConnection = new DbConnection();
-            dbConnection.open();
+            /*DbConnection dbConnection = new DbConnection();
+            dbConnection.open();*/
             long expires = System.currentTimeMillis() + (authorizationCodeCredentials.getExpiresIn() - 1) * 1000;
             dbConnection.changeAccessToken(accessToken, expires);
             dbConnection.changeRefreshToken(authorizationCodeCredentials.getRefreshToken());
-            dbConnection.close();
+            //dbConnection.close();
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             System.out.println("Error: " + e.getMessage());
         }

@@ -29,7 +29,7 @@ public class GetUsersSavedTracks {
         TokenExpiresPair accessTokenPair = dbConnection.getAccessToken();
         if (System.currentTimeMillis() >= accessTokenPair.expires) {
             String refreshToken = dbConnection.getRefreshToken();
-            Authorization.authorizationCodeRefresh_Sync(refreshToken);
+            Authorization.authorizationCodeRefresh_Sync(refreshToken, dbConnection);
         } else {
             spotifyApi.setAccessToken(accessTokenPair.token);
         }

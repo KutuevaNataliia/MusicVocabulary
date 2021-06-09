@@ -1,29 +1,30 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.*;
 
 public class Start extends JFrame {
-
-    public VocabularyManipulation manipulation;
 
     JLabel songsAmount;
     JLabel wordsAmount;
     JButton update;
     JLabel rareWordsListLabel;
-    JLabel selectedWordsListLabel;
+    JLabel favWordsListLabel;
     JList<String> rareWordsList;
-    JList<String> selectedWordsList;
+    DefaultListModel<String> modelAllRareWords;
+    JList<String> favWordsList;
+    SortedListModel modelFav;
     JButton addWord;
     JButton deleteWord;
     JButton showSongs;
+    JButton editWordInformation;
+    JButton play;
 
     public Start() {
-        manipulation = new VocabularyManipulation();
+
         GridBagLayout gridbag = new GridBagLayout();
         getContentPane().setLayout(gridbag);
 
-        songsAmount = new JLabel("Songs ", SwingConstants.RIGHT);
+        songsAmount = new JLabel("Songs " + General.songsNumber, SwingConstants.RIGHT);
         GridBagConstraints constraintSongs = new GridBagConstraints();
         constraintSongs.fill = GridBagConstraints.EAST;
         constraintSongs.anchor = GridBagConstraints.NORTHWEST;
@@ -35,7 +36,7 @@ public class Start extends JFrame {
 
         getContentPane().add(songsAmount, constraintSongs);
 
-        wordsAmount = new JLabel("Words ");
+        wordsAmount = new JLabel("Words " + General.wordsNumber);
         GridBagConstraints constraintWords = new GridBagConstraints();
         constraintWords.fill = GridBagConstraints.EAST;
         constraintWords.anchor = GridBagConstraints.NORTHWEST;
@@ -55,18 +56,7 @@ public class Start extends JFrame {
         constraintUpdate.gridy = 1;
         constraintUpdate.gridwidth = 2;
         getContentPane().add(update, constraintUpdate);
-        update.addActionListener(new UpdateActionListener());
-
-        /*JTextField URLField = new JTextField(" ");
-        GridBagConstraints constraintURL = new GridBagConstraints();
-        constraintURL.fill = GridBagConstraints.HORIZONTAL;
-        constraintURL.anchor = GridBagConstraints.NORTH;
-        constraintURL.gridx = 0;
-        constraintURL.gridy = 2;
-        constraintURL.weightx = 1;
-        constraintURL.weighty = 1;
-        constraintURL.gridwidth = 2;
-        getContentPane().add(URLField, constraintURL);*/
+        update.addActionListener(new General.UpdateActionListener());
 
         rareWordsListLabel = new JLabel("Rare words:");
         GridBagConstraints constraintRareWordsLabel = new GridBagConstraints();
@@ -78,7 +68,7 @@ public class Start extends JFrame {
         constraintRareWordsLabel.weighty = 1;
         getContentPane().add(rareWordsListLabel, constraintRareWordsLabel);
 
-        selectedWordsListLabel = new JLabel("Selected words:");
+        favWordsListLabel = new JLabel("Favourite words:");
         GridBagConstraints constraintSelectedWordsLabel = new GridBagConstraints();
         constraintSelectedWordsLabel.fill = GridBagConstraints.HORIZONTAL;
         constraintSelectedWordsLabel.anchor = GridBagConstraints.NORTH;
@@ -86,10 +76,11 @@ public class Start extends JFrame {
         constraintSelectedWordsLabel.gridy = 3;
         constraintSelectedWordsLabel.weightx = 1;
         constraintSelectedWordsLabel.weighty = 1;
-        getContentPane().add(selectedWordsListLabel, constraintSelectedWordsLabel);
+        getContentPane().add(favWordsListLabel, constraintSelectedWordsLabel);
 
-
-        rareWordsList = new JList<>(manipulation.rareWords);
+        modelAllRareWords = new DefaultListModel<>();
+        General.fillDefaultModel(modelAllRareWords);
+        rareWordsList = new JList<>(modelAllRareWords);
         rareWordsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane rareWordsPane = new JScrollPane(rareWordsList);
         GridBagConstraints constraintAllWordsPane = new GridBagConstraints();
@@ -102,10 +93,12 @@ public class Start extends JFrame {
         constraintAllWordsPane.gridheight = 13;
         getContentPane().add(rareWordsPane, constraintAllWordsPane);
 
-        String[] selectedWords = {"five", "ten", "twelve"};
-        selectedWordsList =  new JList<>(selectedWords);
-        selectedWordsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        JScrollPane selectedWordsPane = new JScrollPane(selectedWordsList);
+        modelFav = new SortedListModel();
+        modelFav.addAll(General.favouriteWords);
+        favWordsList = new JList<>();
+        favWordsList.setModel(modelFav);
+        favWordsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane selectedWordsPane = new JScrollPane(favWordsList);
         GridBagConstraints constraintSelectedWords = new GridBagConstraints();
         constraintSelectedWords.fill = GridBagConstraints.HORIZONTAL;
         constraintSelectedWords.anchor = GridBagConstraints.NORTH;
@@ -125,6 +118,7 @@ public class Start extends JFrame {
         constraintAddWord.gridx = 0;
         constraintAddWord.gridy = 18;
         getContentPane().add(addWord, constraintAddWord);
+        addWord.addActionListener(new General.AddWordListener());
 
         deleteWord = new JButton("Delete word from favourites");
         GridBagConstraints constraintDeleteWord = new GridBagConstraints();
@@ -135,6 +129,7 @@ public class Start extends JFrame {
         constraintDeleteWord.gridx = 1;
         constraintDeleteWord.gridy = 18;
         getContentPane().add(deleteWord, constraintDeleteWord);
+        deleteWord.addActionListener(new General.DeleteWordListener());
 
         showSongs = new JButton("Show songs containing the word");
         GridBagConstraints constraintShowSongs = new GridBagConstraints();
@@ -142,29 +137,92 @@ public class Start extends JFrame {
         constraintShowSongs.anchor = GridBagConstraints.NORTH;
         constraintShowSongs.weightx = 1;
         constraintShowSongs.weighty = 1;
-        constraintShowSongs.gridx = 0;
+        constraintShowSongs.gridx = 1;
         constraintShowSongs.gridy = 19;
-        constraintShowSongs.gridwidth = 2;
         getContentPane().add(showSongs, constraintShowSongs);
+        showSongs.addActionListener(new General.ShowSongsListener());
 
+        editWordInformation = new JButton("Edit word information");
+        GridBagConstraints constraintsWordInformation = new GridBagConstraints();
+        constraintsWordInformation.fill = GridBagConstraints.HORIZONTAL;
+        constraintsWordInformation.anchor = GridBagConstraints.NORTH;
+        constraintsWordInformation.weightx = 1;
+        constraintsWordInformation.weighty = 1;
+        constraintsWordInformation.gridx = 0;
+        constraintsWordInformation.gridy = 19;
+        getContentPane().add(editWordInformation, constraintsWordInformation);
+        editWordInformation.addActionListener(new General.EditWordInformationListener());
+
+        play = new JButton("Play");
+        GridBagConstraints constraintsPlay = new GridBagConstraints();
+        constraintsPlay.fill = GridBagConstraints.HORIZONTAL;
+        constraintsPlay.anchor = GridBagConstraints.NORTH;
+        constraintsPlay.weightx = 1;
+        constraintsPlay.weighty = 1;
+        constraintsPlay.gridx = 0;
+        constraintsPlay.gridy = 20;
+        constraintsPlay.gridwidth = 2;
+        getContentPane().add(play, constraintsPlay);
+        play.addActionListener(new General.PlayActionListener());
 
         setSize(640, 480);
     }
 
-    private class UpdateActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            GetUsersSavedTracks getTracks = new GetUsersSavedTracks();
-            getTracks.updateSongs();
-            manipulation.getRareWords();
-            rareWordsList.updateUI();
+    class SortedListModel extends AbstractListModel {
+        SortedSet<String> model;
+
+        public SortedListModel() {
+            model = new TreeSet<String>();
+        }
+
+        public int getSize() {
+            return model.size();
+        }
+
+        public String getElementAt(int index) {
+            return (String) model.toArray()[index];
+        }
+
+        public void addElement(String element) {
+            if (model.add(element)) {
+                fireContentsChanged(this, 0, getSize());
+            }
+        }
+
+        public void addAll(Vector<String> elements) {
+            //Collection<String> c = Arrays.asList(elements);
+            model.addAll(elements);
+            fireContentsChanged(this, 0, getSize());
+        }
+
+        public void clear() {
+            model.clear();
+            fireContentsChanged(this, 0, getSize());
+        }
+
+        public boolean contains(String element) {
+            return model.contains(element);
+        }
+
+        public String firstElement() {
+            return model.first();
+        }
+
+        public Iterator iterator() {
+            return model.iterator();
+        }
+
+        public String lastElement() {
+            return model.last();
+        }
+
+        public boolean removeElement(String element) {
+            boolean removed = model.remove(element);
+            if (removed) {
+                fireContentsChanged(this, 0, getSize());
+            }
+            return removed;
         }
     }
 
-    public static void main(String[] args)
-    {
-        Start frameMain = new Start();
-        frameMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frameMain.setVisible(true);
-    }
 }
