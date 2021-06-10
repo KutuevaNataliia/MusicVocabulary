@@ -6,35 +6,62 @@ RedirectServer.java
  RedirectServer
  RedirectServer$1
  RedirectServer$MyHandler
-SongInformation.java
- SongInformation
-MyPair.java
- MyPair
-SongsWithWord.java
- SongsWithWord
-Guessable.java
- Guessable
-SongToGuess.java
- SongToGuess
 WordInformation.java
  WordInformation
-WordToGuess.java
- WordToGuess
+MyPair.java
+ MyPair
 DbConnection.java
  DbConnection
-GetUsersSavedTracks.java
- GetUsersSavedTracks
+WordToGuess.java
+ WordToGuess
+SongInformation.java
+ SongInformation
+Start.java
+ Start
+ Start$SortedListModel
+Task.java
+ SongByItself
+ SongByOptions
+ Task
+ WordByItself
+ WordByOptions
+SongToGuess.java
+ SongToGuess
+SongsWithWord.java
+ SongsWithWord
 Authorization.java
  Authorization
 WordInformationForm.java
  WordInformationForm
  WordInformationForm$AddAnotherFormListener
  WordInformationForm$SaveActionListener
+SongTitle.java
+ SongTitle
+Guessable.java
+ Guessable
+GetUsersSavedTracks.java
+ GetUsersSavedTracks
+MyNextStepListener.java
+ MyNextStepListener
+MyAnswerListener.java
+ MyAnswerListener
+MyTaskListener.java
+ MyTaskListener
+GameFrame.java
+ GameFrame
+ GameFrame$1
+ GameFrame$GuessListener
+ GameFrame$GuessPanel
+ GameFrame$NextStepListener
+ GameFrame$SongByItselfPanel
+ GameFrame$SongByOptionsPanel
+ GameFrame$TaskListener
+ GameFrame$WordByItselfPanel
+ GameFrame$WordByOptionsPanel
 Game.java
  Game
-Start.java
- Start
- Start$SortedListModel
+ Game$AnswerListener
+ Game$NextListener
 General.java
  General
  General$AddWordListener

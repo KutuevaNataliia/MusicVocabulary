@@ -1,4 +1,5 @@
-import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 
 public class Game {
@@ -9,8 +10,21 @@ public class Game {
 
     private Random random;
 
+    GameFrame gameFrame;
+
     private int points = 0;
     private int tries = 0;
+
+    private MyTaskListener myTaskListener;
+    private MyNextStepListener myNextStepListener;
+
+    public void setMyTaskListener(MyTaskListener myTaskListener) {
+        this.myTaskListener = myTaskListener;
+    }
+
+    public void setMyNextStepListener(MyNextStepListener myNextStepListener) {
+        this.myNextStepListener = myNextStepListener;
+    }
 
     public Game() {
         words = General.rareWords;
@@ -20,45 +34,91 @@ public class Game {
         DbConnection dbConnection = new DbConnection();
         dbConnection.open();
         for (int i = 0; i < 10; i++) {
-            boolean taskType = random.nextBoolean();
-            if (taskType) {
-                int randomSong = random.nextInt(songIDs.size());
-                SongToGuess songToGuess = makeSongToGuess(randomSong, dbConnection);
-                tasks.addLast(songToGuess);
-            } else {
-                int randomIndex = random.nextInt(wordsWithInformation.size());
-                WordToGuess wordToGuess = makeWordToGuess(wordsWithInformation.get(randomIndex), dbConnection);
-                tasks.addLast(wordToGuess);
-            }
+            generateTask(dbConnection);
         }
         dbConnection.close();
+        gameFrame = new GameFrame();
+        GameFrame.TaskListener taskListener = gameFrame.new TaskListener();
+        GameFrame.NextStepListener nextStepListener = gameFrame.new NextStepListener();
+        gameFrame.setAnswerListener(new AnswerListener());
+        gameFrame.next.addActionListener(new NextListener());
+        setMyTaskListener(taskListener);
+        setMyNextStepListener(nextStepListener);
+        gameFrame.setVisible(true);
+
+    }
+
+    private void generateTask(DbConnection dbConnection) {
+        boolean taskType = random.nextBoolean();
+        if (taskType) {
+            int randomSong = random.nextInt(songIDs.size());
+            SongToGuess songToGuess = makeSongToGuess(randomSong, dbConnection);
+            tasks.addLast(songToGuess);
+        } else {
+            int randomIndex = random.nextInt(wordsWithInformation.size());
+            WordToGuess wordToGuess = makeWordToGuess(wordsWithInformation.get(randomIndex), dbConnection);
+            tasks.addLast(wordToGuess);
+        }
     }
 
     public void play() {
-        for (int i = 0; i < 10; i++) {
+        Task completeTask = null;
+        do {
             Guessable task = tasks.pollFirst();
+            System.out.println("task got");
+            if (task == null) {
+                System.out.println("Null task!!!");
+            }
             boolean guessType = random.nextBoolean();
-            boolean right = true;
             if (guessType) {
-                right = task.guess();
+                System.out.println("no options required");
+                completeTask = task.guess();
+                System.out.println("complete without options");
             } else {
+                System.out.println("options required");
                 if (task instanceof SongToGuess) {
-                    right = guessSongByArray((SongToGuess) task);
-                } else if (task instanceof WordToGuess){
-                    right = guessWordByArray((WordToGuess) task);
+                    System.out.println("song options required");
+                    completeTask = makeSongOptionsTask((SongToGuess) task);
+                    System.out.println("complete song options");
+                } else if (task instanceof WordToGuess) {
+                    System.out.println("word options required");
+                    completeTask = makeWordOptionsTask((WordToGuess) task);
+                    System.out.println("complete word options");
                 }
             }
-            if (right) {
-                points++;
-                System.out.println("Right!\n");
-            } else {
-                System.out.println("Wrong!\n");
+            if (completeTask == null) {
+                System.out.println("Task must be changed");
+                DbConnection dbConnection = new DbConnection();
+                dbConnection.open();
+                generateTask(dbConnection);
+                dbConnection.close();
             }
-            tries++;
-            System.out.println(points + " points out of " + tries);
+        }while (completeTask == null);
+        myTaskListener.OnMyEvent(completeTask, tries + 1);
+        System.out.println("Task ok" + tries);
+        /*DbConnection dbConnection = new DbConnection();
+        dbConnection.open();
+        generateTask(dbConnection);
+        dbConnection.close();*/
+    }
+
+    class NextListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            play();
         }
     }
 
+    class AnswerListener implements MyAnswerListener {
+        @Override
+        public void OnAnswer(boolean right) {
+            if (right) {
+                points++;
+            }
+            tries++;
+            myNextStepListener.onInformation(points, tries < 10);
+        }
+    }
 
     private SongToGuess makeSongToGuess(int index, DbConnection dbConnection) {
         String songID = songIDs.elementAt(index);
@@ -96,18 +156,17 @@ public class Game {
         }
     }
 
-    private void shuffleArrayOfStrings(String[] arr) {
+    private <T> void shuffleArray(T[] arr) {
         for (int i = arr.length - 1; i >= 1; i--) {
             int j = random.nextInt(i + 1);
-            String temp = arr[j];
+            T temp = arr[j];
             arr[j] = arr[i];
             arr[i] = temp;
         }
     }
 
-    private boolean guessSongByArray(SongToGuess songToGuess) {
+    private SongByOptions makeSongOptionsTask(SongToGuess songToGuess) {
         int wrongWordsNumber = random.nextInt(3) + 2;
-        String[] wordsToChoose;
         int rightWordsNumber;
         String[] wordsInSong = songToGuess.words;
         if (wordsInSong.length < 5) {
@@ -116,9 +175,11 @@ public class Game {
             rightWordsNumber = random.nextInt(3) + 3;
         }
         int wordsToChooseLength = wrongWordsNumber + rightWordsNumber;
-        wordsToChoose = new String[wordsToChooseLength];
+        String[] wordsToChoose = new String[wordsToChooseLength];
+        String[] rightAnswers = new String[rightWordsNumber];
         for(int j = 0; j < rightWordsNumber; j++) {
-            wordsToChoose[j] = wordsInSong[j]; //must be shuffled!!!
+            wordsToChoose[j] = wordsInSong[j];
+            rightAnswers[j] = wordsInSong[j];
         }
         for (int j = rightWordsNumber; j < wordsToChooseLength; j++) {
             boolean coincides;
@@ -135,45 +196,50 @@ public class Game {
             } while (coincides);
             wordsToChoose[j] = words.get(wrongWordIndex);
         }
-        shuffleArrayOfStrings(wordsToChoose);
-        return songToGuess.guess(wordsToChoose);
+        shuffleArray(wordsToChoose);
+        return songToGuess.guess(wordsToChoose, rightAnswers);
     }
 
-    private boolean guessWordByArray(WordToGuess wordToGuess) {
-        ArrayList<SongInformation> songsWithWords = new ArrayList<>();
-        Collections.addAll(songsWithWords, wordToGuess.songs);
+    private WordByOptions makeWordOptionsTask(WordToGuess wordToGuess) {
+        SongTitle[] songsWithWords = wordToGuess.songs;
         int rightSongsNumber;
-        if (songsWithWords.size() < 5) {
-            rightSongsNumber = songsWithWords.size();
+        if (songsWithWords.length < 5) {
+            rightSongsNumber = songsWithWords.length;
         } else {
             rightSongsNumber = random.nextInt(3) + 3;
         }
         int wrongSongsNumber = random.nextInt(3) + 2;
-        ArrayList<SongInformation> songsToChoose = new ArrayList<>();
+        SongTitle[] songsToChoose = new SongTitle[rightSongsNumber + wrongSongsNumber];
+
+        SongTitle[] rightAnswers = new SongTitle[rightSongsNumber];
         for (int j = 0; j < rightSongsNumber; j++) {
-            songsToChoose.add(songsWithWords.get(j));
+            songsToChoose[j] = songsWithWords[j];
+            rightAnswers[j] = songsWithWords[j];
         }
+
         DbConnection dbConnection = new DbConnection();
         dbConnection.open();
-        for (int j = 0; j < wrongSongsNumber; j++) {
+        for (int j = rightSongsNumber; j < songsToChoose.length; j++) {
             int wrongSongIndex;
-            boolean coincides;
+            boolean coincides = false;
             do {
                 coincides = false;
                 wrongSongIndex = random.nextInt(songIDs.size());
-                for(SongInformation songInf: songsToChoose) {
-                    if (songInf.spotifyId.equals(songIDs.elementAt(wrongSongIndex))) {
+                System.out.println("wrong index" + wrongSongIndex);
+                for (int k = 0; k < j; k++) {
+                    if (songIDs.get(wrongSongIndex).equals(songsToChoose[k].spotifyId)) {
                         coincides = true;
+                        System.out.println("word collision");
                         break;
                     }
                 }
             } while(coincides);
 
-            SongInformation wrongSongInf = dbConnection.getSongInformationByID(songIDs.elementAt(wrongSongIndex));
-            songsToChoose.add(wrongSongInf);
+            SongTitle wrongSongTitle = dbConnection.getSongTitleByID(songIDs.elementAt(wrongSongIndex));
+            songsToChoose[j] = wrongSongTitle;
         }
         dbConnection.close();
-        Collections.shuffle(songsToChoose);
-        return wordToGuess.guess(songsToChoose.toArray());
+        shuffleArray(songsToChoose);
+        return wordToGuess.guess(songsToChoose, rightAnswers);
     }
 }

@@ -131,6 +131,34 @@ public class DbConnection implements Closeable{
         return songInf;
     }
 
+    public SongTitle getSongTitleByID(String spotifyID) {
+        String query1 = "SELECT name FROM my_songs WHERE spotify_song_id = ?;";
+        String query2 = "SELECT name FROM artists WHERE spotify_song_id = ?;";
+        SongTitle songTitle = new SongTitle();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query1);
+            preparedStatement.setString(1, spotifyID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                songTitle.spotifyId = spotifyID;
+                songTitle.name = resultSet.getString("name");
+                PreparedStatement preparedStatement2 = connection.prepareStatement(query2);
+                preparedStatement2.setString(1, spotifyID);
+                ResultSet resultSet2 = preparedStatement2.executeQuery();
+                int counter = 0;
+                while (resultSet2.next()) {
+                    songTitle.artists[counter] = resultSet2.getString("name");
+                    counter++;
+                }
+                songTitle.artistsNumber = counter;
+            }
+        }
+        catch  (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+       return songTitle;
+    }
+
     public Vector<WordInformation> getAllWordInformation() {
         String query = "SELECT * FROM words_information;";
         Vector<WordInformation> wordInfs = new Vector<>();

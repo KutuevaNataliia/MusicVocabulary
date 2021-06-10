@@ -1,7 +1,6 @@
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
-public class SongToGuess extends SongInformation implements Guessable{
+public class SongToGuess extends SongInformation implements Guessable<String>{
     String[] words;
 
     public SongToGuess(SongInformation songInf, String[] rareWords) {
@@ -11,58 +10,50 @@ public class SongToGuess extends SongInformation implements Guessable{
         this.artists = songInf.artists;
         this.artistsNumber = songInf.artistsNumber;
         words = rareWords;
-        Arrays.sort(words);
     }
 
     //Угадать песню по редким словам
     @Override
-    public boolean guess() {
-        System.out.println("Guess song by rare words\nRare words:");
-        for (String word: words) {
-            System.out.println(" " + word);
+    public SongByItself guess() {
+        if (words.length == 0) {
+            return null;
         }
-        System.out.println("Print the song's name and at least one of the artists' names\n");
-        Scanner scanner = new Scanner(System.in);
-        String inputStr = scanner.nextLine();
-        if (!inputStr.contains(name)) {
-            return false;
+        SongByItself completeTask = new SongByItself();
+        completeTask.taskExplanation = "Guess song by given rare words";
+        if (words.length < 6) {
+            completeTask.words = words.clone();
         } else {
-            for(String artist: artists) {
-                if (inputStr.contains(artist)) {
-                    return true;
-                }
+            List<String> listToShuffle = Arrays.asList(words);
+            Collections.shuffle(listToShuffle);
+            listToShuffle.toArray(words);
+            completeTask.words = new String[5];
+            for (int i = 0; i < 5; i++) {
+                completeTask.words[i] = words[i];
             }
         }
-        return false;
+        completeTask.answerExplanation = "Enter the song's name and one of the artists' names";
+        completeTask.rightAnswer = new SongTitle();
+        completeTask.rightAnswer.name = name;
+        completeTask.rightAnswer.artistsNumber = artistsNumber;
+        completeTask.rightAnswer.artists = artists;
+        return completeTask;
     }
 
     //Угадать какие из редких слов есть в песне
     @Override
-    public boolean guess(Object[] options) {
-        System.out.println("Choose rare words belonging to the song by ");
-        for(int i = 0; i < artistsNumber; i++) {
-            System.out.print(artists[i] + " ");
+    public SongByOptions guess(String[] options, String[] rightAnswers) {
+        if (words.length == 0) {
+            return null;
         }
-        System.out.println("called " + name);
-        for (Object object: options) {
-            if (object instanceof String) {
-                System.out.println(object + " ");
-            }
-        }
-        System.out.println("Print all the appropriate words");
-        Scanner scanner = new Scanner(System.in);
-        String inputStr = scanner.nextLine();
-        String[] inputWords = inputStr.split(" ");
-        if (inputWords.length != words.length) {
-            return false;
-        } else {
-            Arrays.sort(inputWords);
-            for (int i = 0; i < words.length; i++) {
-                if (words[i].equals(inputWords[i])) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        SongByOptions completeTask = new SongByOptions();
+        completeTask.taskExplanation = "Choose all the rare words belonging to the song";
+        completeTask.song = new SongTitle();
+        completeTask.song.name = name;
+        completeTask.song.artistsNumber = artistsNumber;
+        completeTask.song.artists = artists;
+        completeTask.words = options;
+        completeTask.answerExplanation = "Highlight all the appropriate words";
+        completeTask.rightAnswers = rightAnswers;
+        return completeTask;
     }
 }
