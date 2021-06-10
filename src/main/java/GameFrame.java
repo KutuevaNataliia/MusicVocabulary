@@ -286,6 +286,11 @@ public class GameFrame extends JFrame {
             }
             return right;
         }
+
+        public void showRightAnswer() {
+            answerField.setText(rightAnswers[0]);
+            answerField.setForeground(Color.RED);
+        }
     }
 
     private class WordByOptionsPanel {
@@ -363,6 +368,20 @@ public class GameFrame extends JFrame {
                 }
             }
             return true;
+        }
+
+        public void showRightAnswer() {
+            int[] selectedIndices = new int[rightAnswers.length];
+            for (int k = 0; k < rightAnswers.length; k++) {
+                for (int i = 0; i < allSongs.length; i++) {
+                    if (rightAnswers[k].equals(allSongs[i])) {
+                        selectedIndices[k] = i;
+                        break;
+                    }
+                }
+            }
+            songsList.setSelectedIndices(selectedIndices);
+            songsList.setSelectionForeground(Color.RED);
         }
     }
 
@@ -484,6 +503,17 @@ public class GameFrame extends JFrame {
             }
             return Arrays.stream(rightAnswer.artists).anyMatch(artist::equals);
         }
+
+        public void showRightAnswer() {
+            songNameField.setText(rightAnswer.name);
+            songNameField.setForeground(Color.RED);
+            if (rightAnswer.artistsNumber == 1){
+                artistField.setText(rightAnswer.artists[0]);
+            } else {
+                artistField.setText(rightAnswer.artists[0] + " and others...");
+            }
+            artistField.setForeground(Color.RED);
+        }
     }
 
     private class SongByOptionsPanel {
@@ -583,6 +613,20 @@ public class GameFrame extends JFrame {
             }
             return true;
         }
+
+        public void showRightAnswer() {
+            int[] selectedIndices = new int[rightAnswers.length];
+            for (int i = 0; i < rightAnswers.length; i++) {
+                for (int j = 0; j < listModel.size(); j++) {
+                    if(rightAnswers[i].equals(listModel.elementAt(j))) {
+                        selectedIndices[i] = j;
+                        break;
+                    }
+                }
+            }
+            wordsList.setSelectedIndices(selectedIndices);
+            wordsList.setSelectionForeground(Color.RED);
+        }
     }
 
     class TaskListener implements MyTaskListener {
@@ -658,6 +702,20 @@ public class GameFrame extends JFrame {
                 addRightLabel();
             } else {
                 addWrongLabel();
+                switch (currentPanel) {
+                    case WORD_ITSELF:
+                        wordByItselfPanel.showRightAnswer();
+                        break;
+                    case WORD_OPTIONS:
+                        wordByOptionsPanel.showRightAnswer();
+                        break;
+                    case SONG_ITSELF:
+                        songByItselfPanel.showRightAnswer();
+                        break;
+                    case SONG_OPTIONS:
+                        songByOptionsPanel.showRightAnswer();
+                        break;
+                }
             }
             getContentPane().validate();
             getContentPane().repaint();

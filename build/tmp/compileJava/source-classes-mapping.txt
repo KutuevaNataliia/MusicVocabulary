@@ -12,8 +12,17 @@ MyPair.java
  MyPair
 DbConnection.java
  DbConnection
-WordToGuess.java
- WordToGuess
+GameFrame.java
+ GameFrame
+ GameFrame$1
+ GameFrame$GuessListener
+ GameFrame$GuessPanel
+ GameFrame$NextStepListener
+ GameFrame$SongByItselfPanel
+ GameFrame$SongByOptionsPanel
+ GameFrame$TaskListener
+ GameFrame$WordByItselfPanel
+ GameFrame$WordByOptionsPanel
 SongInformation.java
  SongInformation
 Start.java
@@ -25,8 +34,14 @@ Task.java
  Task
  WordByItself
  WordByOptions
-SongToGuess.java
- SongToGuess
+General.java
+ General
+ General$AddWordListener
+ General$DeleteWordListener
+ General$EditWordInformationListener
+ General$PlayActionListener
+ General$ShowSongsListener
+ General$UpdateActionListener
 SongsWithWord.java
  SongsWithWord
 Authorization.java
@@ -47,26 +62,11 @@ MyAnswerListener.java
  MyAnswerListener
 MyTaskListener.java
  MyTaskListener
-GameFrame.java
- GameFrame
- GameFrame$1
- GameFrame$GuessListener
- GameFrame$GuessPanel
- GameFrame$NextStepListener
- GameFrame$SongByItselfPanel
- GameFrame$SongByOptionsPanel
- GameFrame$TaskListener
- GameFrame$WordByItselfPanel
- GameFrame$WordByOptionsPanel
+WordToGuess.java
+ WordToGuess
 Game.java
  Game
  Game$AnswerListener
  Game$NextListener
-General.java
- General
- General$AddWordListener
- General$DeleteWordListener
- General$EditWordInformationListener
- General$PlayActionListener
- General$ShowSongsListener
- General$UpdateActionListener
+SongToGuess.java
+ SongToGuess

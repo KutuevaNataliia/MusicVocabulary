@@ -30,7 +30,7 @@ public class WordToGuess extends WordInformation implements Guessable<SongTitle>
     public WordByOptions guess(SongTitle[] options, SongTitle[] rightAnswers) {
         WordByOptions completeTask = new WordByOptions();
         completeTask.taskExplanation = "Guess what songs contain the word";
-        completeTask.answerExplanation = "Highlight all the appropriate songs";
+        completeTask.answerExplanation = "Select all the appropriate songs";
         completeTask.mainForm = mainForm;
         completeTask.songs = options;
         completeTask.rightAnswers = rightAnswers;

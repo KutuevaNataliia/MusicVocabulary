@@ -52,7 +52,7 @@ public class SongToGuess extends SongInformation implements Guessable<String>{
         completeTask.song.artistsNumber = artistsNumber;
         completeTask.song.artists = artists;
         completeTask.words = options;
-        completeTask.answerExplanation = "Highlight all the appropriate words";
+        completeTask.answerExplanation = "Select all the appropriate words";
         completeTask.rightAnswers = rightAnswers;
         return completeTask;
     }
