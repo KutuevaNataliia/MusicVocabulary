@@ -79,7 +79,7 @@ public class General {
         public void actionPerformed(ActionEvent e) {
             String word = frameMain.favWordsList.getSelectedValue();
             dbConnection.open();
-            ArrayList<SongInformation> songs = dbConnection.getSongsWithWord(word);
+            ArrayList<SongInformation> songs = dbConnection.getSongInformationsWithWord(word);
             dbConnection.close();
             SongsWithWord frameSong = new SongsWithWord(songs, songs.size());
             frameSong.setVisible(true);

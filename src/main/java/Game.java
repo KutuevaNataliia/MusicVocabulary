@@ -8,7 +8,7 @@ public class Game {
     Vector<String> words;
     Vector<WordInformation> wordsWithInformation;
 
-    private Random random;
+    private final Random random;
 
     GameFrame gameFrame;
 
@@ -31,21 +31,25 @@ public class Game {
         songIDs = General.songIDs;
         wordsWithInformation = General.wordsWithInformation;
         random = new Random(System.currentTimeMillis());
+        fillQueue();
+        gameFrame = new GameFrame();
+        GameFrame.TaskListener taskListener = gameFrame.new TaskListener();
+        GameFrame.NextStepListener nextStepListener = gameFrame.new NextStepListener();
+        gameFrame.setAnswerListener(new AnswerListener());
+        gameFrame.next.addActionListener(new NextListener());
+        gameFrame.newGame.addActionListener(new NewGameListener());
+        setMyTaskListener(taskListener);
+        setMyNextStepListener(nextStepListener);
+        gameFrame.setVisible(true);
+    }
+
+    private void fillQueue() {
         DbConnection dbConnection = new DbConnection();
         dbConnection.open();
         for (int i = 0; i < 10; i++) {
             generateTask(dbConnection);
         }
         dbConnection.close();
-        gameFrame = new GameFrame();
-        GameFrame.TaskListener taskListener = gameFrame.new TaskListener();
-        GameFrame.NextStepListener nextStepListener = gameFrame.new NextStepListener();
-        gameFrame.setAnswerListener(new AnswerListener());
-        gameFrame.next.addActionListener(new NextListener());
-        setMyTaskListener(taskListener);
-        setMyNextStepListener(nextStepListener);
-        gameFrame.setVisible(true);
-
     }
 
     private void generateTask(DbConnection dbConnection) {
@@ -72,7 +76,9 @@ public class Game {
             boolean guessType = random.nextBoolean();
             if (guessType) {
                 System.out.println("no options required");
-                completeTask = task.guess();
+                if (task != null) {
+                    completeTask = task.guess();
+                }
                 System.out.println("complete without options");
             } else {
                 System.out.println("options required");
@@ -96,10 +102,16 @@ public class Game {
         }while (completeTask == null);
         myTaskListener.OnMyEvent(completeTask, tries + 1);
         System.out.println("Task ok" + tries);
-        /*DbConnection dbConnection = new DbConnection();
-        dbConnection.open();
-        generateTask(dbConnection);
-        dbConnection.close();*/
+    }
+
+    class NewGameListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            points = 0;
+            tries = 0;
+            fillQueue();
+            play();
+        }
     }
 
     class NextListener implements ActionListener {
@@ -128,18 +140,18 @@ public class Game {
     }
 
     private WordToGuess makeWordToGuess(WordInformation wordInf, DbConnection dbConnection) {
-        ArrayList<SongInformation> songsWithWord = dbConnection.getSongsWithWord(wordInf.mainForm);
+        ArrayList<SongTitle> songsWithWord = dbConnection.getSongTitlesWithWord(wordInf.mainForm);
         for(String form: wordInf.additionalForms) {
-            ArrayList<SongInformation> additional = dbConnection.getSongsWithWord(form);
+            ArrayList<SongTitle> additional = dbConnection.getSongTitlesWithWord(form);
             songsWithWord = joinArrayLists(songsWithWord, additional);
         }
-        SongInformation[] songs = new SongInformation[songsWithWord.size()];
+        SongTitle[] songs = new SongTitle[songsWithWord.size()];
         songs = songsWithWord.toArray(songs);
         return new WordToGuess(wordInf, songs);
     }
 
-    private ArrayList<SongInformation> joinArrayLists(
-            List<SongInformation> listA, List<SongInformation> listB) {
+    private <T> ArrayList<T> joinArrayLists(
+            List<T> listA, List<T> listB) {
         boolean aEmpty = (listA == null) || listA.isEmpty();
         boolean bEmpty = (listB == null) || listB.isEmpty();
         if (aEmpty && bEmpty) {
@@ -149,7 +161,7 @@ public class Game {
         } else if (bEmpty) {
             return new ArrayList<>(listA);
         } else {
-            ArrayList<SongInformation> result = new ArrayList<>(listA.size() + listB.size());
+            ArrayList<T> result = new ArrayList<>(listA.size() + listB.size());
             result.addAll(listA);
             result.addAll(listB);
             return  result;
@@ -221,15 +233,13 @@ public class Game {
         dbConnection.open();
         for (int j = rightSongsNumber; j < songsToChoose.length; j++) {
             int wrongSongIndex;
-            boolean coincides = false;
+            boolean coincides;
             do {
                 coincides = false;
                 wrongSongIndex = random.nextInt(songIDs.size());
-                System.out.println("wrong index" + wrongSongIndex);
                 for (int k = 0; k < j; k++) {
                     if (songIDs.get(wrongSongIndex).equals(songsToChoose[k].spotifyId)) {
                         coincides = true;
-                        System.out.println("word collision");
                         break;
                     }
                 }

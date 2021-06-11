@@ -2,7 +2,7 @@ public class WordToGuess extends WordInformation implements Guessable<SongTitle>
     SongTitle[] songs;
 
     //Переделать конструктор и соответствующие методы !!!
-    public WordToGuess(WordInformation wordInf, SongInformation[] songs) {
+    public WordToGuess(WordInformation wordInf, SongTitle[] songs) {
         this.mainForm = wordInf.mainForm;
         this.translation = wordInf.translation;
         this.additionalForms = wordInf.additionalForms;

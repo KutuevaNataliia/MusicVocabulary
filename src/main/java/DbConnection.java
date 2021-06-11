@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.io.Closeable;
 import java.sql.*;
 import java.util.ArrayList;
@@ -54,7 +53,8 @@ public class DbConnection implements Closeable{
         }
         return false;
     }
-    public  ArrayList<SongInformation> getSongsWithWord(String word) {
+
+    public  ArrayList<SongInformation> getSongInformationsWithWord(String word) {
         ArrayList<SongInformation> songInformations = new ArrayList<>();
         String query1 = "SELECT * FROM my_songs WHERE spotify_song_id IN "
         + "(SELECT spotify_song_id FROM words_in_songs WHERE word = ?);";
@@ -84,6 +84,37 @@ public class DbConnection implements Closeable{
             System.out.println(e.getMessage());
         }
         return songInformations;
+    }
+
+    public ArrayList<SongTitle> getSongTitlesWithWord(String word) {
+        ArrayList<SongTitle> songTitles = new ArrayList<>();
+        String query1 = "SELECT spotify_song_id, name  FROM my_songs WHERE spotify_song_id IN "
+                + "(SELECT spotify_song_id FROM words_in_songs WHERE word = ?);";
+        String query2 = "SELECT name FROM artists WHERE spotify_song_id = ?;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query1);
+            preparedStatement.setString(1, word);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                SongTitle songTitle = new SongTitle();
+                songTitle.spotifyId = resultSet.getString("spotify_song_id");
+                songTitle.name = resultSet.getString("name");
+                PreparedStatement preparedStatement2 = connection.prepareStatement(query2);
+                preparedStatement2.setString(1, songTitle.spotifyId);
+                ResultSet resultSet2 = preparedStatement2.executeQuery();
+                int counter2 = 0;
+                while (resultSet2.next()) {
+                    songTitle.artists[counter2] = resultSet2.getString("name");
+                    counter2++;
+                }
+                songTitle.artistsNumber = counter2;
+                songTitles.add(songTitle);
+            }
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return songTitles;
     }
 
     public Vector<String> getAllSongIDs() {
@@ -330,7 +361,6 @@ public class DbConnection implements Closeable{
         Vector<String> rareWords = new Vector<>();
         String query = "SELECT word FROM my_vocabulary WHERE frequency < 4 ORDER BY word;";
         try {
-            rareWords.clear();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while(resultSet.next()) {
@@ -345,7 +375,6 @@ public class DbConnection implements Closeable{
     public Vector<String> getFavourites() {
         Vector<String> favourites = new Vector<>();
         try {
-            favourites.clear();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT word FROM favourites ORDER BY word;");
             while(resultSet.next()) {

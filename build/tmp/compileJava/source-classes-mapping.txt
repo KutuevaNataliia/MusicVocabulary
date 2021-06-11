@@ -10,8 +10,24 @@ WordInformation.java
  WordInformation
 MyPair.java
  MyPair
-DbConnection.java
- DbConnection
+Guessable.java
+ Guessable
+SongToGuess.java
+ SongToGuess
+SongInformation.java
+ SongInformation
+MyTaskListener.java
+ MyTaskListener
+Task.java
+ SongByItself
+ SongByOptions
+ Task
+ WordByItself
+ WordByOptions
+MyAnswerListener.java
+ MyAnswerListener
+SongsWithWord.java
+ SongsWithWord
 GameFrame.java
  GameFrame
  GameFrame$1
@@ -23,17 +39,30 @@ GameFrame.java
  GameFrame$TaskListener
  GameFrame$WordByItselfPanel
  GameFrame$WordByOptionsPanel
-SongInformation.java
- SongInformation
+MyNextStepListener.java
+ MyNextStepListener
+SongTitle.java
+ SongTitle
+DbConnection.java
+ DbConnection
+WordToGuess.java
+ WordToGuess
+GetUsersSavedTracks.java
+ GetUsersSavedTracks
 Start.java
  Start
  Start$SortedListModel
-Task.java
- SongByItself
- SongByOptions
- Task
- WordByItself
- WordByOptions
+Game.java
+ Game
+ Game$AnswerListener
+ Game$NewGameListener
+ Game$NextListener
+WordInformationForm.java
+ WordInformationForm
+ WordInformationForm$AddAnotherFormListener
+ WordInformationForm$SaveActionListener
+Authorization.java
+ Authorization
 General.java
  General
  General$AddWordListener
@@ -42,31 +71,3 @@ General.java
  General$PlayActionListener
  General$ShowSongsListener
  General$UpdateActionListener
-SongsWithWord.java
- SongsWithWord
-Authorization.java
- Authorization
-WordInformationForm.java
- WordInformationForm
- WordInformationForm$AddAnotherFormListener
- WordInformationForm$SaveActionListener
-SongTitle.java
- SongTitle
-Guessable.java
- Guessable
-GetUsersSavedTracks.java
- GetUsersSavedTracks
-MyNextStepListener.java
- MyNextStepListener
-MyAnswerListener.java
- MyAnswerListener
-MyTaskListener.java
- MyTaskListener
-WordToGuess.java
- WordToGuess
-Game.java
- Game
- Game$AnswerListener
- Game$NextListener
-SongToGuess.java
- SongToGuess

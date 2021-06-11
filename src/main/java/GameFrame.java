@@ -11,11 +11,18 @@ public class GameFrame extends JFrame {
     private JLabel points;
     private JPanel gamePanel;
     private JButton guess;
+    GridBagConstraints constraintsGuess;
 
-    JButton next = new JButton("Next");
-    JButton newGame = null;
-    private JLabel right = null;
-    private JLabel wrong = null;
+    JButton next;
+    GridBagConstraints constraintsNext;
+    JButton newGame;
+    GridBagConstraints constraintsNewGame;
+    JLabel result;
+    GridBagConstraints constraintsResult;
+    JLabel right;
+    GridBagConstraints constraintsRight;
+    JLabel wrong;
+    GridBagConstraints constraintsWrong;
 
     private GridBagLayout gridbag;
 
@@ -48,68 +55,28 @@ public class GameFrame extends JFrame {
     }
 
     private void addRightLabel() {
-        right = new JLabel("Right answer!");
-        GridBagConstraints constraintsRight = new GridBagConstraints();
-        constraintsRight.weightx = 1;
-        constraintsRight.weighty = 1;
-        constraintsRight.fill = GridBagConstraints.CENTER;
-        constraintsRight.anchor = GridBagConstraints.NORTH;
-        constraintsRight.gridx = 0;
-        constraintsRight.gridy = 33;
-        constraintsRight.gridwidth = 2;
         getContentPane().add(right, constraintsRight);
     }
 
     private void addWrongLabel() {
-        wrong = new JLabel("Wrong answer!");
-        GridBagConstraints constraintsWrong = new GridBagConstraints();
-        constraintsWrong.weightx = 1;
-        constraintsWrong.weighty = 1;
-        constraintsWrong.fill = GridBagConstraints.CENTER;
-        constraintsWrong.anchor = GridBagConstraints.NORTH;
-        constraintsWrong.gridx = 0;
-        constraintsWrong.gridy = 33;
-        constraintsWrong.gridwidth = 2;
         getContentPane().add(wrong, constraintsWrong);
     }
 
     private void addNextButton() {
-        GridBagConstraints constraintsNext = new GridBagConstraints();
-        constraintsNext.weightx = 1;
-        constraintsNext.weighty = 1;
-        constraintsNext.fill = GridBagConstraints.CENTER;
-        constraintsNext.anchor = GridBagConstraints.NORTH;
-        constraintsNext.gridx = 0;
-        constraintsNext.gridy = 32;
-        constraintsNext.gridwidth = 2;
         getContentPane().add(next, constraintsNext);
     }
 
     private void addNewGameButton() {
-        newGame = new JButton("New Game");
-        GridBagConstraints constraintsNewGame = new GridBagConstraints();
-        constraintsNewGame.weightx = 1;
-        constraintsNewGame.weighty = 1;
-        constraintsNewGame.fill = GridBagConstraints.CENTER;
-        constraintsNewGame.anchor = GridBagConstraints.NORTH;
-        constraintsNewGame.gridx = 0;
-        constraintsNewGame.gridy = 32;
-        constraintsNewGame.gridwidth = 2;
         getContentPane().add(newGame, constraintsNewGame);
     }
 
+    private void addResultLabel(int points) {
+        result.setText("You've got " + points + " points out of 10");
+        getContentPane().add(result, constraintsResult);
+    }
+
     private void addGuessButton() {
-        guess = new JButton("Guess");
-        GridBagConstraints constraintsGuess = new GridBagConstraints();
-        constraintsGuess.weightx = 1;
-        constraintsGuess.weighty = 1;
-        constraintsGuess.fill = GridBagConstraints.CENTER;
-        constraintsGuess.anchor = GridBagConstraints.NORTH;
-        constraintsGuess.gridx = 0;
-        constraintsGuess.gridy = 32;
-        constraintsGuess.gridwidth = 2;
         getContentPane().add(guess, constraintsGuess);
-        guess.addActionListener(new GuessListener());
     }
 
     public GameFrame() {
@@ -160,6 +127,67 @@ public class GameFrame extends JFrame {
         constraintsGamePanel.gridwidth = 2;
         constraintsGamePanel.gridheight = 30;
         getContentPane().add(gamePanel, constraintsGamePanel);
+
+        guess = new JButton("Guess");
+        constraintsGuess = new GridBagConstraints();
+        constraintsGuess.weightx = 1;
+        constraintsGuess.weighty = 1;
+        constraintsGuess.fill = GridBagConstraints.CENTER;
+        constraintsGuess.anchor = GridBagConstraints.NORTH;
+        constraintsGuess.gridx = 0;
+        constraintsGuess.gridy = 32;
+        constraintsGuess.gridwidth = 2;
+        guess.addActionListener(new GuessListener());
+
+        next = new JButton("Next");
+        constraintsNext = new GridBagConstraints();
+        constraintsNext.weightx = 1;
+        constraintsNext.weighty = 1;
+        constraintsNext.fill = GridBagConstraints.CENTER;
+        constraintsNext.anchor = GridBagConstraints.NORTH;
+        constraintsNext.gridx = 0;
+        constraintsNext.gridy = 32;
+        constraintsNext.gridwidth = 2;
+
+        newGame = new JButton("New Game");
+        constraintsNewGame = new GridBagConstraints();
+        constraintsNewGame.weightx = 1;
+        constraintsNewGame.weighty = 1;
+        constraintsNewGame.fill = GridBagConstraints.CENTER;
+        constraintsNewGame.anchor = GridBagConstraints.NORTH;
+        constraintsNewGame.gridx = 0;
+        constraintsNewGame.gridy = 32;
+        constraintsNewGame.gridwidth = 2;
+
+        right = new JLabel("Right answer!");
+        constraintsRight = new GridBagConstraints();
+        constraintsRight.weightx = 1;
+        constraintsRight.weighty = 1;
+        constraintsRight.fill = GridBagConstraints.CENTER;
+        constraintsRight.anchor = GridBagConstraints.NORTH;
+        constraintsRight.gridx = 0;
+        constraintsRight.gridy = 33;
+        constraintsRight.gridwidth = 2;
+
+        wrong = new JLabel("Wrong answer!");
+        constraintsWrong = new GridBagConstraints();
+        constraintsWrong.weightx = 1;
+        constraintsWrong.weighty = 1;
+        constraintsWrong.fill = GridBagConstraints.CENTER;
+        constraintsWrong.anchor = GridBagConstraints.NORTH;
+        constraintsWrong.gridx = 0;
+        constraintsWrong.gridy = 33;
+        constraintsWrong.gridwidth = 2;
+
+        result = new JLabel();
+        constraintsResult = new GridBagConstraints();
+        constraintsResult.weightx = 1;
+        constraintsResult.weighty = 1;
+        constraintsResult.fill = GridBagConstraints.CENTER;
+        constraintsResult.anchor = GridBagConstraints.NORTH;
+        constraintsResult.gridx = 0;
+        constraintsResult.gridy = 34;
+        constraintsResult.gridwidth = 2;
 
         setSize(640, 660);
     }
@@ -635,16 +663,20 @@ public class GameFrame extends JFrame {
             if (next.getParent() == getContentPane()) {
                 getContentPane().remove(next);
                 System.out.println("next removed");
-            } else if (newGame != null && newGame.getParent() == getContentPane()) {
+            } else if (newGame.getParent() == getContentPane()) {
                 getContentPane().remove(newGame);
                 System.out.println("new game removed");
             }
-            if (right != null && right.getParent() == getContentPane()) {
+            if (right.getParent() == getContentPane()) {
                 getContentPane().remove(right);
                 System.out.println("right removed");
-            } else if (wrong != null && wrong.getParent() == getContentPane()) {
+            } else if (wrong.getParent() == getContentPane()) {
                 getContentPane().remove(wrong);
                 System.out.println("wrong removed");
+            }
+            if (result.getParent() == getContentPane()) {
+                getContentPane().remove(result);
+                setPoints(0);
             }
             setStep(step);
             addGuessButton();
@@ -697,6 +729,7 @@ public class GameFrame extends JFrame {
                 addNextButton();
             } else {
                 addNewGameButton();
+                addResultLabel(points);
             }
             if (rightAnswer) {
                 addRightLabel();
