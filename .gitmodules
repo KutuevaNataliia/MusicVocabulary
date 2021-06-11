@@ -1,0 +1,3 @@
+[submodule "deps/GeniusLyricsAPI"]
+	path = deps/GeniusLyricsAPI
+	url = https://github.com/LowLevelSubmarine/GeniusLyricsAPI.git
