@@ -5,10 +5,16 @@ plugins {
 group 'org.example'
 version '1.0-SNAPSHOT'
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(15))
+    }
+}
+
 repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
-    flatDir { dirs 'GLA/target'}
+    flatDir { dirs 'deps/GeniusLyricsAPI/target'}
 }
 
 dependencies {
