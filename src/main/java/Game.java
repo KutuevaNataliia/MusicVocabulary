@@ -3,7 +3,7 @@ import java.awt.event.ActionListener;
 import java.util.*;
 
 public class Game {
-    private LinkedList<Guessable> tasks = new LinkedList<>();
+    private ArrayDeque<Guessable> tasks = new ArrayDeque<>();
     Vector<String> songIDs;
     Vector<String> words;
     Vector<WordInformation> wordsWithInformation;
@@ -57,18 +57,18 @@ public class Game {
         if (taskType) {
             int randomSong = random.nextInt(songIDs.size());
             SongToGuess songToGuess = makeSongToGuess(randomSong, dbConnection);
-            tasks.addLast(songToGuess);
+            tasks.add(songToGuess);
         } else {
             int randomIndex = random.nextInt(wordsWithInformation.size());
             WordToGuess wordToGuess = makeWordToGuess(wordsWithInformation.get(randomIndex), dbConnection);
-            tasks.addLast(wordToGuess);
+            tasks.add(wordToGuess);
         }
     }
 
     public void play() {
         Task completeTask = null;
         do {
-            Guessable task = tasks.pollFirst();
+            Guessable task = tasks.poll();
             System.out.println("task got");
             if (task == null) {
                 System.out.println("Null task!!!");

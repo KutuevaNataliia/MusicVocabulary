@@ -1,4 +1,4 @@
-public interface Guessable<T> {
+public interface Guessable {
     Task guess();
-    Task guess(T[] options, T[] rightAnswers);
+    Task guess(Object[] options, Object[] rightAnswers);
 }

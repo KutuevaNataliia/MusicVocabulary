@@ -1,4 +1,6 @@
-public class WordToGuess extends WordInformation implements Guessable<SongTitle>{
+import java.util.Arrays;
+
+public class WordToGuess extends WordInformation implements Guessable{
     SongTitle[] songs;
 
     //Переделать конструктор и соответствующие методы !!!
@@ -27,13 +29,13 @@ public class WordToGuess extends WordInformation implements Guessable<SongTitle>
 
     //Угадать, в каких песнях встречается слово
     @Override
-    public WordByOptions guess(SongTitle[] options, SongTitle[] rightAnswers) {
+    public WordByOptions guess(Object[] options, Object[] rightAnswers) {
         WordByOptions completeTask = new WordByOptions();
         completeTask.taskExplanation = "Guess what songs contain the word";
         completeTask.answerExplanation = "Select all the appropriate songs";
         completeTask.mainForm = mainForm;
-        completeTask.songs = options;
-        completeTask.rightAnswers = rightAnswers;
+        completeTask.songs = Arrays.copyOf(options, options.length, SongTitle[].class);
+        completeTask.rightAnswers = Arrays.copyOf(rightAnswers, rightAnswers.length, SongTitle[].class);
         return completeTask;
     }
 }

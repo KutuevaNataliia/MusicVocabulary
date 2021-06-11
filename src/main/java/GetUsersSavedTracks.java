@@ -26,12 +26,12 @@ public class GetUsersSavedTracks {
 
     public void updateSongs() {
         dbConnection.open();
-        TokenExpiresPair accessTokenPair = dbConnection.getAccessToken();
-        if (System.currentTimeMillis() >= accessTokenPair.expires) {
+        MyPair<String, Long> accessTokenPair = dbConnection.getAccessToken();
+        if (System.currentTimeMillis() >= accessTokenPair.getSecond()) {
             String refreshToken = dbConnection.getRefreshToken();
             Authorization.authorizationCodeRefresh_Sync(refreshToken, dbConnection);
         } else {
-            spotifyApi.setAccessToken(accessTokenPair.token);
+            spotifyApi.setAccessToken(accessTokenPair.getFirst());
         }
         setGetUsersSavedTracksRequest(0);
         getUsersSavedTracks_Sync();

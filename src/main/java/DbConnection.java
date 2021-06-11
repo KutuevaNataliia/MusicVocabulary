@@ -5,6 +5,7 @@ import java.util.Vector;
 
 public class DbConnection implements Closeable{
     private Connection connection;
+
     public void open() {
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:songs.db");
@@ -440,13 +441,13 @@ public class DbConnection implements Closeable{
         return result;
     }
 
-    public ArrayList<WordFrequencyPair> getAllVocabulary() {
-        ArrayList<WordFrequencyPair> pairs= new ArrayList<>();
+    public ArrayList<MyPair<String, Integer>> getAllVocabulary() {
+        ArrayList<MyPair<String, Integer>> pairs= new ArrayList<>();
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM my_vocabulary ORDER BY word;");
             while(resultSet.next()) {
-                pairs.add(new WordFrequencyPair(resultSet.getString("word"), resultSet.getInt("frequency")));
+                pairs.add(new MyPair<>(resultSet.getString("word"), resultSet.getInt("frequency")));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -518,15 +519,15 @@ public class DbConnection implements Closeable{
         }
     }
 
-    public TokenExpiresPair getAccessToken() {
+    public MyPair<String, Long> getAccessToken() {
         String query = "SELECT token, expires FROM tokens WHERE name = 'access';";
-        TokenExpiresPair pair = new TokenExpiresPair("", 0);
+        MyPair<String, Long> pair = new MyPair<>("", (long)0);
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
-                pair.token = resultSet.getString("token");
-                pair.expires = resultSet.getLong("expires");
+                pair.setFirst(resultSet.getString("token"));
+                pair.setSecond(resultSet.getLong("expires"));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());

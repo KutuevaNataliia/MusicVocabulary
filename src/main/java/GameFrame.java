@@ -270,13 +270,13 @@ public class GameFrame extends JFrame {
 
             instructions = new JLabel(task.answerExplanation);
             GridBagConstraints constraintsInstructions = new GridBagConstraints();
-            constraintsList.weightx = 1;
-            constraintsList.weighty = 1;
-            constraintsList.fill = GridBagConstraints.HORIZONTAL;
-            constraintsList.anchor = GridBagConstraints.NORTH;
-            constraintsList.gridx = 0;
-            constraintsList.gridy = 14;
-            constraintsList.gridwidth = 2;
+            constraintsInstructions.weightx = 1;
+            constraintsInstructions.weighty = 1;
+            constraintsInstructions.fill = GridBagConstraints.HORIZONTAL;
+            constraintsInstructions.anchor = GridBagConstraints.NORTH;
+            constraintsInstructions.gridx = 0;
+            constraintsInstructions.gridy = 14;
+            constraintsInstructions.gridwidth = 2;
             gamePanel.add(instructions, constraintsInstructions);
 
             answerLabel = new JLabel("Your Answer");

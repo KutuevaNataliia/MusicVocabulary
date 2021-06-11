@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class SongToGuess extends SongInformation implements Guessable<String>{
+public class SongToGuess extends SongInformation implements Guessable{
     String[] words;
 
     public SongToGuess(SongInformation songInf, String[] rareWords) {
@@ -41,7 +41,7 @@ public class SongToGuess extends SongInformation implements Guessable<String>{
 
     //Угадать какие из редких слов есть в песне
     @Override
-    public SongByOptions guess(String[] options, String[] rightAnswers) {
+    public SongByOptions guess(Object[] options, Object[] rightAnswers) {
         if (words.length == 0) {
             return null;
         }
@@ -51,9 +51,9 @@ public class SongToGuess extends SongInformation implements Guessable<String>{
         completeTask.song.name = name;
         completeTask.song.artistsNumber = artistsNumber;
         completeTask.song.artists = artists;
-        completeTask.words = options;
+        completeTask.words = Arrays.copyOf(options, options.length, String[].class);
         completeTask.answerExplanation = "Select all the appropriate words";
-        completeTask.rightAnswers = rightAnswers;
+        completeTask.rightAnswers = Arrays.copyOf(rightAnswers, rightAnswers.length, String[].class);
         return completeTask;
     }
 }

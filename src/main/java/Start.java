@@ -168,11 +168,11 @@ public class Start extends JFrame {
         setSize(640, 480);
     }
 
-    class SortedListModel extends AbstractListModel {
+    static class SortedListModel extends AbstractListModel<String> {
         SortedSet<String> model;
 
         public SortedListModel() {
-            model = new TreeSet<String>();
+            model = new TreeSet<>();
         }
 
         public int getSize() {
@@ -190,7 +190,6 @@ public class Start extends JFrame {
         }
 
         public void addAll(Vector<String> elements) {
-            //Collection<String> c = Arrays.asList(elements);
             model.addAll(elements);
             fireContentsChanged(this, 0, getSize());
         }
@@ -208,20 +207,15 @@ public class Start extends JFrame {
             return model.first();
         }
 
-        public Iterator iterator() {
-            return model.iterator();
-        }
-
         public String lastElement() {
             return model.last();
         }
 
-        public boolean removeElement(String element) {
+        public void removeElement(String element) {
             boolean removed = model.remove(element);
             if (removed) {
                 fireContentsChanged(this, 0, getSize());
             }
-            return removed;
         }
     }
 
