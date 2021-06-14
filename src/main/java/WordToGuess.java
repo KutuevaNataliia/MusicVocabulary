@@ -1,4 +1,4 @@
-import java.util.Arrays;
+import java.util.*;
 
 public class WordToGuess extends WordInformation implements Guessable{
     SongTitle[] songs;
@@ -29,13 +29,55 @@ public class WordToGuess extends WordInformation implements Guessable{
 
     //Угадать, в каких песнях встречается слово
     @Override
-    public WordByOptions guess(Object[] options, Object[] rightAnswers) {
+    public WordByOptions guess(Vector<String> options, Random random) {
+        int rightSongsNumber;
+        if (songs.length < 5) {
+            rightSongsNumber = songs.length;
+        } else {
+            rightSongsNumber = random.nextInt(3) + 3;
+            List<SongTitle> listToShuffle = Arrays.asList(songs);
+            Collections.shuffle(listToShuffle);
+            listToShuffle.toArray(songs);
+        }
+        int wrongSongsNumber = random.nextInt(3) + 2;
+        SongTitle[] songsToChoose = new SongTitle[rightSongsNumber + wrongSongsNumber];
+
+        SongTitle[] rightAnswers = new SongTitle[rightSongsNumber];
+        for (int j = 0; j < rightSongsNumber; j++) {
+            songsToChoose[j] = songs[j];
+            rightAnswers[j] = songs[j];
+        }
+
+        DbConnection dbConnection = new DbConnection();
+        dbConnection.open();
+        for (int j = rightSongsNumber; j < songsToChoose.length; j++) {
+            int wrongSongIndex;
+            boolean coincides;
+            do {
+                coincides = false;
+                wrongSongIndex = random.nextInt(options.size());
+                for (int k = 0; k < j; k++) {
+                    if (options.get(wrongSongIndex).equals(songsToChoose[k].spotifyId)) {
+                        coincides = true;
+                        break;
+                    }
+                }
+            } while(coincides);
+
+            SongTitle wrongSongTitle = dbConnection.getSongTitleByID(options.elementAt(wrongSongIndex));
+            songsToChoose[j] = wrongSongTitle;
+        }
+        dbConnection.close();
+        List<SongTitle> listToShuffle = Arrays.asList(songsToChoose);
+        Collections.shuffle(listToShuffle);
+        listToShuffle.toArray(songsToChoose);
+
         WordByOptions completeTask = new WordByOptions();
         completeTask.taskExplanation = "Guess what songs contain the word";
         completeTask.answerExplanation = "Select all the appropriate songs";
         completeTask.mainForm = mainForm;
-        completeTask.songs = Arrays.copyOf(options, options.length, SongTitle[].class);
-        completeTask.rightAnswers = Arrays.copyOf(rightAnswers, rightAnswers.length, SongTitle[].class);
+        completeTask.songs = songsToChoose;
+        completeTask.rightAnswers = rightAnswers;
         return completeTask;
     }
 }

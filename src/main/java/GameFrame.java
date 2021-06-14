@@ -390,7 +390,7 @@ public class GameFrame extends JFrame {
                 return false;
             }
             for(int selectedIndex: selectedIndices) {
-                boolean contains = Arrays.stream(rightAnswers).anyMatch(allSongs[selectedIndex]::equals);
+                boolean contains = Arrays.asList(rightAnswers).contains(allSongs[selectedIndex]);
                 if(!contains) {
                     return false;
                 }
@@ -529,7 +529,7 @@ public class GameFrame extends JFrame {
             if (!name.equals(rightAnswer.name)) {
                 return false;
             }
-            return Arrays.stream(rightAnswer.artists).anyMatch(artist::equals);
+            return Arrays.asList(rightAnswer.artists).contains(artist);
         }
 
         public void showRightAnswer() {
@@ -634,7 +634,7 @@ public class GameFrame extends JFrame {
                 return false;
             }
             for (int selectedIndex: selectedIndices) {
-               boolean contains = Arrays.stream(rightAnswers).anyMatch(listModel.getElementAt(selectedIndex)::equals);
+               boolean contains = Arrays.asList(rightAnswers).contains(listModel.getElementAt(selectedIndex));
                if (!contains) {
                    return false;
                }
@@ -659,20 +659,16 @@ public class GameFrame extends JFrame {
 
     class TaskListener implements MyTaskListener {
         @Override
-        public void OnMyEvent(Task completeTask, int step) {
+        public void onMyEvent(Task completeTask, int step) {
             if (next.getParent() == getContentPane()) {
                 getContentPane().remove(next);
-                System.out.println("next removed");
             } else if (newGame.getParent() == getContentPane()) {
                 getContentPane().remove(newGame);
-                System.out.println("new game removed");
             }
             if (right.getParent() == getContentPane()) {
                 getContentPane().remove(right);
-                System.out.println("right removed");
             } else if (wrong.getParent() == getContentPane()) {
                 getContentPane().remove(wrong);
-                System.out.println("wrong removed");
             }
             if (result.getParent() == getContentPane()) {
                 getContentPane().remove(result);
@@ -680,7 +676,6 @@ public class GameFrame extends JFrame {
             }
             setStep(step);
             addGuessButton();
-            System.out.println("guess added");
             getContentPane().validate();
             getContentPane().repaint();
             if (completeTask instanceof WordByItself) {
@@ -703,20 +698,12 @@ public class GameFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             switch (currentPanel) {
-                case WORD_ITSELF:
-                    rightAnswer = wordByItselfPanel.checkAnswer();
-                    break;
-                case WORD_OPTIONS:
-                    rightAnswer = wordByOptionsPanel.checkAnswer();
-                    break;
-                case SONG_ITSELF:
-                    rightAnswer = songByItselfPanel.checkAnswer();
-                    break;
-                case SONG_OPTIONS:
-                    rightAnswer = songByOptionsPanel.checkAnswer();
-                    break;
+                case WORD_ITSELF -> rightAnswer = wordByItselfPanel.checkAnswer();
+                case WORD_OPTIONS -> rightAnswer = wordByOptionsPanel.checkAnswer();
+                case SONG_ITSELF -> rightAnswer = songByItselfPanel.checkAnswer();
+                case SONG_OPTIONS -> rightAnswer = songByOptionsPanel.checkAnswer();
             }
-            answerListener.OnAnswer(rightAnswer);
+            answerListener.onAnswer(rightAnswer);
         }
     }
 
@@ -736,18 +723,10 @@ public class GameFrame extends JFrame {
             } else {
                 addWrongLabel();
                 switch (currentPanel) {
-                    case WORD_ITSELF:
-                        wordByItselfPanel.showRightAnswer();
-                        break;
-                    case WORD_OPTIONS:
-                        wordByOptionsPanel.showRightAnswer();
-                        break;
-                    case SONG_ITSELF:
-                        songByItselfPanel.showRightAnswer();
-                        break;
-                    case SONG_OPTIONS:
-                        songByOptionsPanel.showRightAnswer();
-                        break;
+                    case WORD_ITSELF -> wordByItselfPanel.showRightAnswer();
+                    case WORD_OPTIONS -> wordByOptionsPanel.showRightAnswer();
+                    case SONG_ITSELF -> songByItselfPanel.showRightAnswer();
+                    case SONG_OPTIONS -> songByOptionsPanel.showRightAnswer();
                 }
             }
             getContentPane().validate();

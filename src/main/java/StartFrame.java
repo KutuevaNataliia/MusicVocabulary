@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
-public class Start extends JFrame {
+public class StartFrame extends JFrame {
 
     JLabel songsAmount;
     JLabel wordsAmount;
@@ -19,7 +19,7 @@ public class Start extends JFrame {
     JButton editWordInformation;
     JButton play;
 
-    public Start() {
+    public StartFrame() {
 
         GridBagLayout gridbag = new GridBagLayout();
         getContentPane().setLayout(gridbag);
@@ -189,7 +189,7 @@ public class Start extends JFrame {
             }
         }
 
-        public void addAll(Vector<String> elements) {
+        public void addAll(LinkedList<String> elements) {
             model.addAll(elements);
             fireContentsChanged(this, 0, getSize());
         }

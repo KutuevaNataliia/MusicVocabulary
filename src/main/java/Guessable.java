@@ -1,4 +1,7 @@
+import java.util.Random;
+import java.util.Vector;
+
 public interface Guessable {
     Task guess();
-    Task guess(Object[] options, Object[] rightAnswers);
+    Task guess(Vector<String> options, Random random);
 }

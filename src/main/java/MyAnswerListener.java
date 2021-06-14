@@ -1,3 +1,3 @@
 public interface MyAnswerListener {
-    void OnAnswer(boolean right);
+    void onAnswer(boolean right);
 }

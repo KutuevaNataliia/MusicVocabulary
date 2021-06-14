@@ -8,19 +8,15 @@ import core.GLA;
 import genius.SongSearch;
 import org.apache.hc.core5.http.ParseException;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 public class GetUsersSavedTracks {
     private GetUsersSavedTracksRequest getUsersSavedTracksRequest;
 
-    private SpotifyApi spotifyApi = Authorization.spotifyApi;
+    private final SpotifyApi spotifyApi = Authorization.spotifyApi;
 
     private final DbConnection dbConnection = new DbConnection();
 
@@ -44,18 +40,6 @@ public class GetUsersSavedTracks {
           .offset(offset)
 //          .market(CountryCode.SE)
           .build();
-    }
-
-    private void printTracks(Paging<SavedTrack> savedTrackPaging, FileWriter writer) throws IOException{
-        SavedTrack[] tracks = savedTrackPaging.getItems();
-        for (SavedTrack track: tracks) {
-            writer.write("Artists: ");
-            ArtistSimplified[] artists = track.getTrack().getArtists();
-            for (ArtistSimplified artist: artists) {
-                writer.write(artist.getName() + " ");
-            }
-            writer.write("Track: " + track.getTrack().getName() + "\n");
-        }
     }
 
     private void processText(String text, String spotifyID) {
@@ -134,18 +118,7 @@ public class GetUsersSavedTracks {
     public void getUsersSavedTracks_Sync() {
         try {
             final Paging<SavedTrack> savedTrackPaging = getUsersSavedTracksRequest.execute();
-
-            //System.out.println("Total: " + savedTrackPaging.getTotal());
             int total = savedTrackPaging.getTotal();
-            /*try (FileWriter writer = new FileWriter("FavouriteTracks.txt")) {
-                writer.write("Total: " + total + "\n");
-                printTracks(savedTrackPaging, writer);
-                for (int i = 0; i < ((total - 1) / 50); i++) {
-                    setGetUsersSavedTracksRequest((i + 1) * 50);
-                    Paging<SavedTrack> savedTrackPaging2 = getUsersSavedTracksRequest.execute();
-                    printTracks(savedTrackPaging2, writer);
-                }
-            }*/
             processTracks(savedTrackPaging);
             for (int i = 0; i < ((total - 1) / 50); i++) {
                 setGetUsersSavedTracksRequest((i + 1) * 50);
@@ -155,23 +128,6 @@ public class GetUsersSavedTracks {
             System.out.println("All tracks added");
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             System.out.println("Error: " + e.getMessage());
-        }
-    }
-
-    public void getUsersSavedTracks_Async() {
-        try {
-            final CompletableFuture<Paging<SavedTrack>> pagingFuture = getUsersSavedTracksRequest.executeAsync();
-
-            // Thread free to do other tasks...
-
-            // Example Only. Never block in production code.
-            final Paging<SavedTrack> savedTrackPaging = pagingFuture.join();
-
-            System.out.println("Total: " + savedTrackPaging.getTotal());
-        } catch (CompletionException e) {
-            System.out.println("Error: " + e.getCause().getMessage());
-        } catch (CancellationException e) {
-            System.out.println("Async operation cancelled.");
         }
     }
 }

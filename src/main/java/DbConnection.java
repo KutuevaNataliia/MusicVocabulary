@@ -1,6 +1,7 @@
 import java.io.Closeable;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Vector;
 
 public class DbConnection implements Closeable{
@@ -373,8 +374,8 @@ public class DbConnection implements Closeable{
         return rareWords;
     }
 
-    public Vector<String> getFavourites() {
-        Vector<String> favourites = new Vector<>();
+    public LinkedList<String> getFavourites() {
+        LinkedList<String> favourites = new LinkedList<>();
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT word FROM favourites ORDER BY word;");

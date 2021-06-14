@@ -2,17 +2,18 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Vector;
 
 public class General {
     static int songsNumber;
     static int wordsNumber;
     static Vector<String> rareWords;
-    static Vector<String> favouriteWords;
     static Vector<WordInformation> wordsWithInformation;
     static Vector<String> songIDs;
+    static LinkedList<String> favouriteWords;
 
-    private static Start frameMain;
+    private static StartFrame frameMain;
 
     private static DbConnection dbConnection;
     private static Game game;
@@ -81,7 +82,7 @@ public class General {
             dbConnection.open();
             ArrayList<SongInformation> songs = dbConnection.getSongInformationsWithWord(word);
             dbConnection.close();
-            SongsWithWord frameSong = new SongsWithWord(songs, songs.size());
+            SongsWithWordFrame frameSong = new SongsWithWordFrame(songs, songs.size());
             frameSong.setVisible(true);
         }
     }
@@ -90,7 +91,7 @@ public class General {
         @Override
         public void actionPerformed(ActionEvent e) {
             String word = frameMain.rareWordsList.getSelectedValue();
-            WordInformationForm wordForm = new WordInformationForm(word);
+            WordInformationFrame wordForm = new WordInformationFrame(word);
             wordForm.setVisible(true);
         }
     }
@@ -111,7 +112,7 @@ public class General {
         wordsWithInformation = dbConnection.getAllWordInformation();
         songIDs = dbConnection.getAllSongIDs();
         dbConnection.close();
-        frameMain = new Start();
+        frameMain = new StartFrame();
         frameMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frameMain.setVisible(true);
     }

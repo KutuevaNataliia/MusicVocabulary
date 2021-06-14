@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class SongsWithWord extends JFrame {
+public class SongsWithWordFrame extends JFrame {
 
     JLabel[] artists;
     GridBagConstraints[] constraintsArtists;
@@ -11,14 +11,11 @@ public class SongsWithWord extends JFrame {
     JTextArea[] texts;
     JScrollPane[] scrollPanes;
     GridBagConstraints[] constraintsTexts;
-    private final int songsAmount;
 
-    public SongsWithWord(ArrayList<SongInformation> songInfs, int songsAmount) {
+    public SongsWithWordFrame(ArrayList<SongInformation> songInfs, int songsAmount) {
 
         GridBagLayout gridbag = new GridBagLayout();
         getContentPane().setLayout(gridbag);
-
-        this.songsAmount = songsAmount;
 
         SongInformation[] songs = new SongInformation[songsAmount];
         songs = songInfs.toArray(songs);

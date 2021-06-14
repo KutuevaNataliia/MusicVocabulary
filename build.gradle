@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id "com.github.dkorotych.gradle-maven-exec" version "2.2.1"
 }
 
 group 'org.example'
@@ -14,7 +15,7 @@ java {
 repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
-    flatDir { dirs 'deps/GeniusLyricsAPI/target'}
+    flatDir name: 'GLA', dirs: 'deps/GeniusLyricsAPI/target'
 }
 
 dependencies {
@@ -26,6 +27,19 @@ dependencies {
     implementation group: 'org.json', name: 'json', version: '20210307'
     implementation 'org.xerial:sqlite-jdbc:3.34.0'
 }
+
+tasks.register('buidMavenDeps', MavenExec) {
+    workingDir file("$rootDir/deps/GeniusLyricsAPI")
+    goals 'clean', 'package'
+}
+
+tasks.register('cleanMavenDeps', MavenExec) {
+    workingDir file("$rootDir/deps/GeniusLyricsAPI")
+    goals 'clean'
+}
+
+//compileJava.dependsOn buidMavenDeps
+//clean.dependsOn cleanMavenDeps
 
 test {
     useJUnitPlatform()

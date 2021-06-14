@@ -1,3 +1,3 @@
 public interface MyTaskListener {
-    void OnMyEvent(Task completeTask, int step);
+    void onMyEvent(Task completeTask, int step);
 }

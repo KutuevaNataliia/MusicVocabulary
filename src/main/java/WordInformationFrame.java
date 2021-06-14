@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class WordInformationForm extends JFrame {
+public class WordInformationFrame extends JFrame {
 
     GridBagLayout gridbag;
 
@@ -26,7 +26,7 @@ public class WordInformationForm extends JFrame {
     WordInformation initialInformation;
     int initialKey;
 
-    WordInformationForm(String wordSource) {
+    WordInformationFrame(String wordSource) {
 
         gridbag = new GridBagLayout();
         getContentPane().setLayout(gridbag);
@@ -151,12 +151,11 @@ public class WordInformationForm extends JFrame {
                 dbConnection.open();
                 if (initialKey == 0) {
                    dbConnection.addWordInformation(newInformation);
-                   General.wordsWithInformation.add(newInformation);
                 } else {
                     dbConnection.updateWordInformation(newInformation, initialKey);
                     General.wordsWithInformation.remove(initialInformation);
-                    General.wordsWithInformation.add(newInformation);
                 }
+                General.wordsWithInformation.add(newInformation);
                 dbConnection.close();
 
                 closeForm();
