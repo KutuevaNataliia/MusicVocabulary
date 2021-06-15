@@ -66,17 +66,22 @@ public class SongToGuess extends SongInformation implements Guessable{
         for (int j = rightWordsNumber; j < wordsToChooseLength; j++) {
             boolean coincides;
             int wrongWordIndex;
+            String wrongWord;
             do {
-                wrongWordIndex  = random.nextInt(options.size());
                 coincides = false;
-                for (int k = 0; k < j; k++) {
-                    if (options.get(wrongWordIndex).equals(wordsToChoose[k])) {
+                wrongWordIndex  = random.nextInt(options.size());
+                wrongWord = options.get(wrongWordIndex);
+                if (Arrays.asList(words).contains(wrongWord)) {
+                    continue;
+                }
+                for (int k = rightWordsNumber; k < j; k++) {
+                    if (wrongWord.equals(wordsToChoose[k])) {
                         coincides = true;
                         break;
                     }
                 }
             } while (coincides);
-            wordsToChoose[j] = options.get(wrongWordIndex);
+            wordsToChoose[j] = wrongWord;
         }
         List<String> listToShuffle = Arrays.asList(wordsToChoose);
         Collections.shuffle(listToShuffle);

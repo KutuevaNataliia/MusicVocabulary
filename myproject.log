@@ -43,3 +43,7 @@
 22:28:11,857  INFO HTTP-Dispatcher RedirectServer:handleRequest:79 - future code done
 22:28:11,867  INFO HTTP-Dispatcher RedirectServer:handleRequest:81 - future CodeRequest done
 22:28:12,383  INFO HTTP-Dispatcher RedirectServer:handleRequest:83 - everything ok
+10:29:53,207  INFO HTTP-Dispatcher RedirectServer:handle:89 - query = code=AQCVOuKo26ckYANCvMkVVCGq4ee42ARYLP01YVkMoF_hbd2N_vRjBfWpcgYUqShGY2P3wvJak1RPECADlXJBkfcgkHB4WvaikLRJ9LzDa1GSQAeba4whgjb8nVLrw_FXDM8KylbjB7tVTf5zq2wqsr4n3q91qLMT2rmvMl50I6JVPH9WI_3FWfO9WPjH
+10:29:53,213  INFO HTTP-Dispatcher RedirectServer:handleRequest:74 - future code done
+10:29:53,218  INFO HTTP-Dispatcher RedirectServer:handleRequest:76 - future CodeRequest done
+10:29:53,926  INFO HTTP-Dispatcher RedirectServer:handleRequest:78 - everything ok

@@ -53,18 +53,23 @@ public class WordToGuess extends WordInformation implements Guessable{
         for (int j = rightSongsNumber; j < songsToChoose.length; j++) {
             int wrongSongIndex;
             boolean coincides;
+            String wrongID;
             do {
                 coincides = false;
                 wrongSongIndex = random.nextInt(options.size());
-                for (int k = 0; k < j; k++) {
-                    if (options.get(wrongSongIndex).equals(songsToChoose[k].spotifyId)) {
+                wrongID = options.get(wrongSongIndex);
+                if (Arrays.asList(songs).contains(wrongID)) {
+                    continue;
+                }
+                for (int k = rightSongsNumber; k < j; k++) {
+                    if (wrongID.equals(songsToChoose[k].spotifyId)) {
                         coincides = true;
                         break;
                     }
                 }
             } while(coincides);
 
-            SongTitle wrongSongTitle = dbConnection.getSongTitleByID(options.elementAt(wrongSongIndex));
+            SongTitle wrongSongTitle = dbConnection.getSongTitleByID(wrongID);
             songsToChoose[j] = wrongSongTitle;
         }
         dbConnection.close();

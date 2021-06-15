@@ -5,7 +5,7 @@ import java.util.*;
 public class Game {
     private final ArrayDeque<Guessable> tasks = new ArrayDeque<>();
     Vector<String> songIDs;
-    Vector<String> words;
+    Vector<String> rareWords;
     Vector<WordInformation> wordsWithInformation;
 
     private final Random random;
@@ -27,7 +27,7 @@ public class Game {
     }
 
     public Game() {
-        words = General.rareWords;
+        rareWords = General.rareWords;
         songIDs = General.songIDs;
         wordsWithInformation = General.wordsWithInformation;
         random = new Random(System.currentTimeMillis());
@@ -41,6 +41,7 @@ public class Game {
         setMyTaskListener(taskListener);
         setMyNextStepListener(nextStepListener);
         gameFrame.setVisible(true);
+        play();
     }
 
     private void fillQueue() {
@@ -65,7 +66,7 @@ public class Game {
         }
     }
 
-    public void play() {
+    private void play() {
         Task completeTask = null;
         do {
             Guessable task = tasks.poll();
@@ -76,7 +77,7 @@ public class Game {
                 }
             } else {
                 if (task instanceof SongToGuess) {
-                    completeTask = task.guess(words, random);
+                    completeTask = task.guess(rareWords, random);
                 } else if (task instanceof WordToGuess) {
                     completeTask = task.guess(songIDs, random);
                 }

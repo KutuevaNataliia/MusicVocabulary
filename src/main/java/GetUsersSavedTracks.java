@@ -46,21 +46,19 @@ public class GetUsersSavedTracks {
         String[] words = text.split("\\s+");
         Set<String> set = new HashSet<>();
         for (String word: words) {
-            String word1 = word.replaceAll("[\\p{P}&&[^\u0027]]", "");
-            if (!word1.isEmpty()) {
+            String word1 = word.replaceAll("[\\p{P}&&[^\u0027\u2010]]", "");
+            if (!word1.isEmpty() && !word1.matches("\\d+") && !word1.matches("\\W+")) {
                 word = word1.substring(0, 1).toUpperCase() + word1.substring(1);
-                if (!word.matches("\\d+") && !word.matches("\\W+")) {
-                    int frequency = dbConnection.getWordFrequency(word);
-                    if (frequency == 0) {
+                int frequency = dbConnection.getWordFrequency(word);
+                if (frequency == 0) {
+                    set.add(word);
+                    dbConnection.addWordToVocabulary(word);
+                    dbConnection.addWordSongConnection(word, spotifyID);
+                } else if (frequency < 20) {
+                    dbConnection.increaseWordFrequency(word, frequency);
+                    if (frequency < 3 && !set.contains(word)) {
                         set.add(word);
-                        dbConnection.addWordToVocabulary(word);
                         dbConnection.addWordSongConnection(word, spotifyID);
-                    } else if (frequency < 20) {
-                        dbConnection.increaseWordFrequency(word, frequency);
-                        if (frequency < 3 && !set.contains(word)) {
-                            set.add(word);
-                            dbConnection.addWordSongConnection(word, spotifyID);
-                        }
                     }
                 }
             }
@@ -74,7 +72,7 @@ public class GetUsersSavedTracks {
 
         for (SavedTrack track: tracks) {
             String id = track.getTrack().getId();
-            if (!dbConnection.checkSong(id)) {
+            if (!General.songIDs.contains(id)) {
                 ArtistSimplified[] artists = track.getTrack().getArtists();
                 StringBuilder glaSearch = new StringBuilder();
                 String[] myArtists = new String[artists.length];
@@ -92,6 +90,7 @@ public class GetUsersSavedTracks {
                     SongSearch songSearch = gla.search(glaSearch.toString());
                     LinkedList<SongSearch.Hit> hits = songSearch.getHits();
                     for (SongSearch.Hit hit: hits) {
+                        System.out.println(hit.getTitle());
                         boolean sameTrack = true;
                         for (String myArtist: myArtists) {
                             if (!hit.getArtist().getName().contains(myArtist)){

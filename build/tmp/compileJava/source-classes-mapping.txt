@@ -20,14 +20,20 @@ Guessable.java
  Guessable
 DbConnection.java
  DbConnection
-WordToGuess.java
- WordToGuess
+RedirectServer.java
+ RedirectServer
+ RedirectServer$1
+ RedirectServer$MyHandler
 Authorization.java
  Authorization
 MyAnswerListener.java
  MyAnswerListener
 MyTaskListener.java
  MyTaskListener
+SongsWithWordFrame.java
+ SongsWithWordFrame
+WordToGuess.java
+ WordToGuess
 GameFrame.java
  GameFrame
  GameFrame$1
@@ -39,8 +45,9 @@ GameFrame.java
  GameFrame$TaskListener
  GameFrame$WordByItselfPanel
  GameFrame$WordByOptionsPanel
-GetUsersSavedTracks.java
- GetUsersSavedTracks
+MainFrame.java
+ MainFrame
+ MainFrame$SortedListModel
 WordInformationFrame.java
  WordInformationFrame
  WordInformationFrame$AddAnotherFormListener
@@ -50,15 +57,8 @@ Game.java
  Game$AnswerListener
  Game$NewGameListener
  Game$NextListener
-SongsWithWordFrame.java
- SongsWithWordFrame
-StartFrame.java
- StartFrame
- StartFrame$SortedListModel
-RedirectServer.java
- RedirectServer
- RedirectServer$1
- RedirectServer$MyHandler
+GetUsersSavedTracks.java
+ GetUsersSavedTracks
 General.java
  General
  General$AddWordListener
